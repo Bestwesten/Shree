@@ -7,8 +7,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #0056b3;
-            --secondary: #e67e22;
+            --primary: #003580; /* Best Western blue */
+            --secondary: #FFB606; /* Best Western gold */
             --accent: #2ecc71;
             --dark: #2c3e50;
             --light: #ecf0f1;
@@ -51,6 +51,7 @@
             margin-bottom: 5px;
             font-weight: 600;
             font-size: 2.2rem;
+            text-align: center;
         }
         
         .subtitle {
@@ -59,6 +60,7 @@
             margin-top: 0;
             margin-bottom: 30px;
             font-weight: 400;
+            text-align: center;
         }
         
         .section {
@@ -200,11 +202,12 @@
         
         .hotel-image {
             width: 100%;
-            height: 200px;
+            height: 250px;
             object-fit: cover;
             border-radius: 10px;
             margin-bottom: 20px;
             box-shadow: var(--shadow);
+            border: 1px solid rgba(0, 0, 0, 0.1);
         }
         
         @media (max-width: 768px) {
@@ -216,6 +219,10 @@
             .controls {
                 grid-template-columns: 1fr;
             }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
         }
     </style>
 </head>
@@ -224,7 +231,8 @@
         <h1>Best Western Hopkinsville Welcome Guide</h1>
         <p class="subtitle">Your Comfortable Stay in Hopkinsville, KY</p>
         
-        <img src="https://media-cdn.tripadvisor.com/media/photo-s/1b/5b/33/3d/best-western-hopkinsville.jpg" alt="Best Western Hopkinsville" class="hotel-image">
+        <!-- Local image reference - save this file in the same directory -->
+        <img src="best-western-hopkinsville.jpg" alt="Best Western Hopkinsville" class="hotel-image">
         
         <div class="section">
             <h3 class="section-title">Voice Commands</h3>
@@ -292,15 +300,15 @@
     <script>
         // Audio file mapping
         const audioMap = {
-            'm': 'intro.mp3',
-            'w': 'welcome.mp3',
-            'e': 'elevator.mp3',
-            'b': 'breakfast.mp3',
-            'r': 'restaurant.mp3',
-            'h': 'helpful.mp3',
-            's': 'stay.mp3',
-            'd': 'entrance.mp3',
-            'full': ['intro.mp3', 'welcome.mp3', 'helpful.mp3'] // Full intro sequence
+            'm': 'audio/intro.mp3',
+            'w': 'audio/welcome.mp3',
+            'e': 'audio/elevator.mp3',
+            'b': 'audio/breakfast.mp3',
+            'r': 'audio/restaurant.mp3',
+            'h': 'audio/helpful.mp3',
+            's': 'audio/stay.mp3',
+            'd': 'audio/directions.mp3',
+            'full': ['audio/intro.mp3', 'audio/welcome.mp3', 'audio/helpful.mp3']
         };
 
         // Command phrases mapping
@@ -397,7 +405,6 @@
             }
         }
 
-        // Initialize voice recognition
         function initVoiceRecognition() {
             try {
                 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -553,14 +560,14 @@
         
         function getAudioDescriptionForFile(filename) {
             const fileMap = {
-                'intro.mp3': 'Main Introduction',
-                'welcome.mp3': 'Welcome Message',
-                'elevator.mp3': 'Elevator Locations',
-                'breakfast.mp3': 'Breakfast Information',
-                'restaurant.mp3': 'Restaurant Guide',
-                'helpful.mp3': 'Helpful Tips',
-                'stay.mp3': 'Stay Details',
-                'entrance.mp3': 'Directions'
+                'audio/intro.mp3': 'Main Introduction',
+                'audio/welcome.mp3': 'Welcome Message',
+                'audio/elevator.mp3': 'Elevator Locations',
+                'audio/breakfast.mp3': 'Breakfast Information',
+                'audio/restaurant.mp3': 'Restaurant Guide',
+                'audio/helpful.mp3': 'Helpful Tips',
+                'audio/stay.mp3': 'Stay Details',
+                'audio/directions.mp3': 'Directions'
             };
             return fileMap[filename] || 'Audio Guide';
         }
