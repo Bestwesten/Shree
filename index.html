@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hotel Voice Assistant</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <title>Best Western Virtual Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #003580;
@@ -24,69 +24,78 @@
         
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: var(--light);
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
             color: var(--dark);
-            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             padding: 20px;
         }
         
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
+        .assistant-container {
+            width: 100%;
+            max-width: 420px;
             background: var(--white);
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+            position: relative;
+            height: 700px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .avatar-container {
+            background: linear-gradient(135deg, var(--primary), #0047ab);
+            padding: 30px 20px;
+            text-align: center;
+            position: relative;
+            flex-shrink: 0;
+        }
+        
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid rgba(255,255,255,0.2);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            margin: 0 auto 15px;
+            background: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             overflow: hidden;
         }
         
-        header {
-            background: linear-gradient(135deg, var(--primary), #0047ab);
-            color: white;
-            padding: 25px;
-            text-align: center;
-        }
-        
-        h1 {
-            font-size: 1.8rem;
-            margin-bottom: 5px;
-        }
-        
-        .subtitle {
-            font-size: 1rem;
-            opacity: 0.9;
-        }
-        
-        .hotel-image {
+        .avatar img {
             width: 100%;
-            height: 200px;
+            height: 100%;
             object-fit: cover;
         }
         
-        .voice-section {
-            padding: 25px;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .voice-status {
+        .avatar-status {
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--white);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             display: flex;
             align-items: center;
-            margin-bottom: 20px;
         }
         
-        .mic-icon {
-            width: 24px;
-            height: 24px;
-            margin-right: 10px;
-            position: relative;
-        }
-        
-        .mic-icon::before {
-            content: "";
-            position: absolute;
-            width: 100%;
-            height: 100%;
+        .status-dot {
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
-            background-color: var(--error);
+            background: var(--error);
+            margin-right: 8px;
             animation: pulse 1.5s infinite;
         }
         
@@ -96,263 +105,235 @@
             100% { transform: scale(1); opacity: 1; }
         }
         
-        .status-text {
+        .status-active .status-dot {
+            background: var(--accent);
+        }
+        
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+            color: white;
             font-weight: 500;
         }
         
+        .subtitle {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            color: rgba(255,255,255,0.8);
+        }
+        
+        .message-area {
+            flex-grow: 1;
+            padding: 30px 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            position: relative;
+        }
+        
+        .assistant-message {
+            background: #f1f3f6;
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+            color: var(--dark);
+        }
+        
+        .user-message {
+            background: var(--primary);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .action-area {
+            padding: 15px 20px;
+            border-top: 1px solid #eee;
+            background: var(--white);
+            flex-shrink: 0;
+        }
+        
         .btn {
-            display: inline-block;
+            display: block;
             background-color: var(--accent);
             color: white;
             border: none;
-            padding: 12px 25px;
-            border-radius: 8px;
+            padding: 14px;
+            border-radius: 12px;
             font-size: 1rem;
             cursor: pointer;
             transition: all 0.3s;
-            margin: 5px 0;
             width: 100%;
             text-align: center;
+            font-weight: 500;
+            box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
         }
         
         .btn:hover {
             background-color: #27ae60;
             transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(46, 204, 113, 0.4);
         }
         
         .btn-secondary {
             background-color: var(--secondary);
+            box-shadow: 0 4px 10px rgba(255, 182, 6, 0.3);
+            margin-top: 10px;
         }
         
         .btn-secondary:hover {
             background-color: #e6a800;
+            box-shadow: 0 6px 15px rgba(255, 182, 6, 0.4);
         }
         
-        .command-list {
+        .typing-indicator {
+            display: flex;
+            padding: 10px 15px;
+            background: #f1f3f6;
+            border-radius: 18px;
+            align-self: flex-start;
+            margin-bottom: 15px;
+            border-bottom-left-radius: 5px;
+        }
+        
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #999;
+            border-radius: 50%;
+            margin: 0 3px;
+            animation: bounce 1.4s infinite ease-in-out;
+        }
+        
+        .typing-dot:nth-child(1) {
+            animation-delay: 0s;
+        }
+        
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes bounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-5px); }
+        }
+        
+        .suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
             margin-top: 15px;
-            font-size: 0.9rem;
-            color: #666;
         }
         
-        .commands {
-            padding: 25px;
-        }
-        
-        .command-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-        
-        .command-btn {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
+        .suggestion-chip {
+            background: rgba(0, 53, 128, 0.1);
+            color: var(--primary);
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
             cursor: pointer;
-            transition: all 0.3s;
-            text-align: center;
+            transition: all 0.2s;
         }
         
-        .command-btn:hover {
-            background-color: #002b66;
-            transform: translateY(-2px);
+        .suggestion-chip:hover {
+            background: rgba(0, 53, 128, 0.2);
         }
         
-        .command-key {
-            font-weight: bold;
-            font-size: 1.2rem;
-            margin-bottom: 5px;
-        }
-        
-        .status-message {
-            padding: 15px;
-            margin-top: 20px;
-            border-radius: 8px;
-            text-align: center;
-            font-weight: 500;
-        }
-        
-        .status-active {
-            background-color: #e8f5e9;
-            color: #2e7d32;
-        }
-        
-        .status-error {
-            background-color: #ffebee;
-            color: #c62828;
-        }
-        
-        .mobile-help {
-            background-color: #fff8e1;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
-            font-size: 0.9rem;
-            border-left: 4px solid #ffc107;
-        }
-        
-        .mobile-help h4 {
-            margin-bottom: 8px;
-            color: #e65100;
-        }
-        
-        .mobile-help ul {
-            padding-left: 20px;
-        }
-        
-        .mobile-help li {
-            margin-bottom: 5px;
-        }
-        
-        @media (max-width: 600px) {
-            body {
-                padding: 10px;
-            }
-            
-            .command-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-            
-            h1 {
-                font-size: 1.5rem;
+        @media (max-width: 480px) {
+            .assistant-container {
+                height: 100vh;
+                max-height: -webkit-fill-available;
+                border-radius: 0;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Best Western Hopkinsville</h1>
-            <p class="subtitle">Voice-Activated Guest Guide</p>
-        </header>
-        
-        <img src="https://github.com/Bestwesten/Shree/raw/cd93deb12e39a02cb60f5ec3decbc2338f4f5121/images/hotel.jpg" alt="Best Western Hopkinsville" class="hotel-image">
-        
-        <section class="voice-section">
-            <div class="voice-status">
-                <div class="mic-icon"></div>
-                <div class="status-text" id="micStatusText">Microphone access required</div>
+    <div class="assistant-container">
+        <div class="avatar-container">
+            <div class="avatar">
+                <img src="https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/images/ai_avatar.png" alt="SHREE Virtual Assistant">
             </div>
-            
-            <button id="permissionButton" class="btn">Enable Voice Commands</button>
+            <h1>SHREE Virtual Assistant</h1>
+            <p class="subtitle">Your Best Western digital concierge</p>
+            <div class="avatar-status" id="micStatusText">
+                <div class="status-dot"></div>
+                <span>Offline</span>
+            </div>
+        </div>
+        
+        <div class="message-area" id="messageArea">
+            <div class="assistant-message message">
+                Hello! I'm SHREE, your virtual concierge. How may I assist you today?
+            </div>
+            <div class="suggestions">
+                <div class="suggestion-chip" data-key="welcome">Welcome</div>
+                <div class="suggestion-chip" data-key="breakfast">Breakfast</div>
+                <div class="suggestion-chip" data-key="amenities">Amenities</div>
+                <div class="suggestion-chip" data-key="wifi">Wi-Fi Help</div>
+            </div>
+        </div>
+        
+        <div class="action-area">
+            <button id="permissionButton" class="btn">Activate Voice Assistant</button>
             <button id="refreshButton" class="btn btn-secondary" style="display: none;">Restart Microphone</button>
-            
-            <div class="command-list">
-                <p>Try saying: "Welcome", "Breakfast", "Elevator", or "Stop"</p>
-            </div>
-            
-            <div id="mobileHelp" class="mobile-help" style="display: none;">
-                <h4>Mobile Device Tips</h4>
-                <ul>
-                    <li>Tap "Enable Voice Commands" and allow microphone access</li>
-                    <li>Speak clearly in a quiet environment</li>
-                    <li>If voice commands don't work, try refreshing the page</li>
-                    <li>Ensure Chrome has microphone permissions in device settings</li>
-                </ul>
-            </div>
-        </section>
-        
-        <section class="commands">
-            <h2>Quick Commands</h2>
-            <div class="command-grid">
-                <button class="command-btn" data-key="w">
-                    <div class="command-key">Welcome</div>
-                    <div>Welcome Message</div>
-                </button>
-                <button class="command-btn" data-key="b">
-                    <div class="command-key">Breakfast</div>
-                    <div>Dining Info</div>
-                </button>
-                <button class="command-btn" data-key="e">
-                    <div class="command-key">Elevator</div>
-                    <div>Locations</div>
-                </button>
-                <button class="command-btn" data-key="a">
-                    <div class="command-key">Amenities</div>
-                    <div>Hotel Features</div>
-                </button>
-                <button class="command-btn" data-key="wifi">
-                    <div class="command-key">Wi-Fi</div>
-                    <div>Connection Info</div>
-                </button>
-                <button class="command-btn" data-key="g">
-                    <div class="command-key">Gym</div>
-                    <div>Hours & Info</div>
-                </button>
-                <button class="command-btn" data-key="p">
-                    <div class="command-key">Pool</div>
-                    <div>Hours & Rules</div>
-                </button>
-                <button class="command-btn" data-key="s">
-                    <div class="command-key">Services</div>
-                    <div>Guest Services</div>
-                </button>
-            </div>
-            
-            <div class="command-grid" style="margin-top: 15px;">
-                <button id="stopButton" class="command-btn" style="background-color: var(--error);">
-                    <div class="command-key">⏹</div>
-                    <div>Stop Audio</div>
-                </button>
-                <button id="playAllButton" class="command-btn" style="background-color: var(--accent);">
-                    <div class="command-key">▶</div>
-                    <div>Play All Info</div>
-                </button>
-            </div>
-        </section>
-        
-        <div id="status" class="status-message">Ready to assist you</div>
+        </div>
     </div>
 
     <script>
         // Audio file mapping with GitHub raw URLs
         const audioMap = {
-            'w': 'https://github.com/Bestwesten/Shree/raw/cd93deb12e39a02cb60f5ec3decbc2338f4f5121/audio/welcome.mp3',
-            'b': 'https://github.com/Bestwesten/Shree/raw/cd93deb12e39a02cb60f5ec3decbc2338f4f5121/audio/breakfast.mp3',
-            'e': 'https://github.com/Bestwesten/Shree/raw/cd93deb12e39a02cb60f5ec3decbc2338f4f5121/audio/elevator.mp3',
-            'a': 'https://github.com/Bestwesten/Shree/raw/cd93deb12e39a02cb60f5ec3decbc2338f4f5121/audio/amenities.mp3',
-            'wifi': 'https://github.com/Bestwesten/Shree/raw/cd93deb12e39a02cb60f5ec3decbc2338f4f5121/audio/wifi.mp3',
-            'g': 'https://github.com/Bestwesten/Shree/raw/cd93deb12e39a02cb60f5ec3decbc2338f4f5121/audio/gym.mp3',
-            'p': 'https://github.com/Bestwesten/Shree/raw/cd93deb12e39a02cb60f5ec3decbc2338f4f5121/audio/pool.mp3',
-            's': 'https://github.com/Bestwesten/Shree/raw/cd93deb12e39a02cb60f5ec3decbc2338f4f5121/audio/services.mp3',
-            'full': [
-                'https://github.com/Bestwesten/Shree/raw/cd93deb12e39a02cb60f5ec3decbc2338f4f5121/audio/welcome.mp3',
-                'https://github.com/Bestwesten/Shree/raw/cd93deb12e39a02cb60f5ec3decbc2338f4f5121/audio/amenities.mp3',
-                'https://github.com/Bestwesten/Shree/raw/cd93deb12e39a02cb60f5ec3decbc2338f4f5121/audio/services.mp3'
-            ]
+            'welcome': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/welcome.mp3',
+            'breakfast': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/breakfast.mp3',
+            'elevator': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/elevator.mp3',
+            'amenities': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/amenities.mp3',
+            'wifi': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/wifi.mp3',
+            'pool': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/pool.mp3',
+            'services': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/services.mp3',
+            'checkin': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/checkin.mp3',
+            'housekeeping': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/housekeeping.mp3',
+            'parking': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/parking.mp3'
         };
 
-        // Command phrases mapping
+        // Command mapping
         const commandMap = {
-            'welcome': 'w',
-            'greeting': 'w',
-            'hello': 'w',
-            'breakfast': 'b',
-            'dining': 'b',
-            'food': 'b',
-            'elevator': 'e',
-            'lift': 'e',
-            'amenities': 'a',
-            'features': 'a',
-            'facilities': 'a',
+            'welcome': 'welcome',
+            'hello': 'welcome',
+            'hi': 'welcome',
+            'greeting': 'welcome',
+            'breakfast': 'breakfast',
+            'food': 'breakfast',
+            'eat': 'breakfast',
+            'elevator': 'elevator',
+            'lift': 'elevator',
+            'amenities': 'amenities',
+            'features': 'amenities',
             'wifi': 'wifi',
             'internet': 'wifi',
-            'gym': 'g',
-            'fitness': 'g',
-            'workout': 'g',
-            'pool': 'p',
-            'swimming': 'p',
-            'services': 's',
-            'help': 's',
+            'pool': 'pool',
+            'swim': 'pool',
+            'services': 'services',
+            'help': 'services',
+            'checkin': 'checkin',
+            'arrival': 'checkin',
+            'housekeeping': 'housekeeping',
+            'clean': 'housekeeping',
+            'parking': 'parking',
+            'park': 'parking',
             'stop': 'stop',
-            'pause': 'stop',
-            'quiet': 'stop',
-            'all': 'full',
-            'everything': 'full',
-            'play all': 'full'
+            'quiet': 'stop'
         };
 
         // Global variables
@@ -364,29 +345,19 @@
         const micStatusText = document.getElementById('micStatusText');
         const permissionButton = document.getElementById('permissionButton');
         const refreshButton = document.getElementById('refreshButton');
-        const statusElement = document.getElementById('status');
-        const stopButton = document.getElementById('stopButton');
-        const playAllButton = document.getElementById('playAllButton');
-        const commandButtons = document.querySelectorAll('.command-btn[data-key]');
-        const mobileHelp = document.getElementById('mobileHelp');
+        const messageArea = document.getElementById('messageArea');
+        const suggestionChips = document.querySelectorAll('.suggestion-chip');
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            // Show mobile help if on mobile
-            if (isMobile) {
-                mobileHelp.style.display = 'block';
-            }
-
             // Setup button click handlers
-            commandButtons.forEach(btn => {
-                btn.addEventListener('click', function() {
+            suggestionChips.forEach(chip => {
+                chip.addEventListener('click', function() {
                     const key = this.getAttribute('data-key');
                     playAudio(key);
                 });
             });
 
-            stopButton.addEventListener('click', stopAudio);
-            playAllButton.addEventListener('click', playFullIntroduction);
             permissionButton.addEventListener('click', requestMicrophonePermission);
             refreshButton.addEventListener('click', resetMicrophone);
         });
@@ -406,14 +377,14 @@
             }
             permissionButton.style.display = 'block';
             refreshButton.style.display = 'none';
-            micStatusText.textContent = 'Microphone access required';
-            setStatus('Microphone reset. Tap "Enable Voice Commands" to start again.');
+            micStatusText.innerHTML = '<div class="status-dot"></div><span>Offline</span>';
+            addMessage('Microphone reset. Tap "Activate Voice Assistant" to start again.', 'assistant');
         }
 
         function requestMicrophonePermission() {
             if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                setStatus('Voice commands not supported on this browser', 'error');
-                micStatusText.innerHTML = '<span style="color:var(--error)">Voice commands not supported</span>';
+                addMessage('Voice commands not supported on this browser', 'assistant');
+                micStatusText.innerHTML = '<div class="status-dot" style="background:var(--error)"></div><span>Not Supported</span>';
                 permissionButton.style.display = 'none';
                 return;
             }
@@ -424,8 +395,9 @@
                     // Permission granted
                     permissionButton.style.display = 'none';
                     refreshButton.style.display = 'block';
-                    micStatusText.textContent = 'Listening for commands...';
-                    setStatus('Microphone ready - say a command', 'active');
+                    micStatusText.innerHTML = '<div class="status-dot" style="background:var(--accent)"></div><span>Listening</span>';
+                    micStatusText.classList.add('status-active');
+                    addMessage('I\'m listening now. How may I help you?', 'assistant');
                     
                     // Keep a reference to the stream
                     window.localStream = stream;
@@ -448,8 +420,8 @@
                         errorMessage = 'Microphone is already in use';
                     }
                     
-                    setStatus(errorMessage, 'error');
-                    micStatusText.innerHTML = `<span style="color:var(--error)">${errorMessage}</span>`;
+                    addMessage(errorMessage, 'assistant');
+                    micStatusText.innerHTML = '<div class="status-dot" style="background:var(--error)"></div><span>Error</span>';
                 });
         }
 
@@ -462,187 +434,137 @@
                 
                 recognition = new SpeechRecognition();
                 recognition.continuous = true;
-                recognition.interimResults = isMobile; // Use interim results on mobile
+                recognition.interimResults = isMobile;
                 recognition.maxAlternatives = 1;
                 recognition.lang = 'en-US';
 
                 recognition.onstart = function() {
-                    micStatusText.textContent = 'Listening for commands...';
+                    micStatusText.innerHTML = '<div class="status-dot" style="background:var(--accent)"></div><span>Listening</span>';
                 };
 
                 recognition.onresult = function(event) {
-                    // Get the most recent result
                     const result = event.results[event.results.length - 1];
                     
-                    // On mobile, we might get interim results that we should ignore
                     if (isMobile && !result.isFinal) {
                         return;
                     }
                     
                     const transcript = result[0].transcript.toLowerCase().trim();
-                    setStatus(`Heard: "${transcript}"`, 'active');
+                    addMessage(transcript, 'user');
                     
-                    // Find the best matching command
                     let matchedKey = null;
+                    let highestConfidence = 0;
+                    
                     for (const [phrase, key] of Object.entries(commandMap)) {
                         if (transcript.includes(phrase)) {
-                            matchedKey = key;
-                            break;
+                            const confidence = phrase.length;
+                            if (confidence > highestConfidence) {
+                                highestConfidence = confidence;
+                                matchedKey = key;
+                            }
                         }
                     }
                     
                     if (matchedKey === 'stop') {
                         stopAudio();
-                    } else if (matchedKey === 'full') {
-                        playFullIntroduction();
                     } else if (matchedKey) {
                         playAudio(matchedKey);
+                    } else {
+                        addMessage('I didn\'t understand that. Try saying "Help" for options.', 'assistant');
                     }
                 };
 
                 recognition.onerror = function(event) {
                     console.error('Speech recognition error:', event.error);
+                    micStatusText.innerHTML = '<div class="status-dot" style="background:var(--error)"></div><span>Error</span>';
                     
-                    let errorMessage = 'Voice command error';
-                    if (event.error === 'not-allowed') {
-                        errorMessage = 'Microphone access denied';
-                    } else if (event.error === 'no-speech') {
-                        errorMessage = 'No speech detected';
-                    } else if (event.error === 'audio-capture') {
-                        errorMessage = 'Microphone not available';
-                    }
-                    
-                    setStatus(errorMessage, 'error');
-                    micStatusText.textContent = 'Microphone error';
-                    
-                    // Try to restart recognition after error
                     setTimeout(() => {
                         if (recognition) recognition.start();
                     }, 2000);
                 };
 
                 recognition.onend = function() {
-                    // Automatically restart recognition when it ends
                     if (recognition) recognition.start();
                 };
 
-                // Start recognition
                 recognition.start();
 
             } catch(e) {
                 console.error('Speech recognition failed:', e);
-                setStatus('Voice commands not supported', 'error');
-                micStatusText.innerHTML = '<span style="color:var(--error)">Voice commands not available</span>';
+                addMessage('Voice commands not supported', 'assistant');
+                micStatusText.innerHTML = '<div class="status-dot" style="background:var(--error)"></div><span>Not Supported</span>';
                 permissionButton.style.display = 'none';
             }
         }
 
-        function setStatus(message, type = '') {
-            statusElement.textContent = message;
-            statusElement.className = 'status-message';
-            if (type === 'active') {
-                statusElement.classList.add('status-active');
-            } else if (type === 'error') {
-                statusElement.classList.add('status-error');
-            }
+        function addMessage(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', sender + '-message');
+            messageDiv.textContent = text;
+            messageArea.appendChild(messageDiv);
+            messageArea.scrollTop = messageArea.scrollHeight;
+        }
+
+        function showTyping() {
+            const typingDiv = document.createElement('div');
+            typingDiv.classList.add('typing-indicator');
+            typingDiv.innerHTML = `
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            `;
+            messageArea.appendChild(typingDiv);
+            messageArea.scrollTop = messageArea.scrollHeight;
+            return typingDiv;
         }
 
         function stopAudio() {
             if (currentAudio) {
-                if (Array.isArray(currentAudio)) {
-                    currentAudio.forEach(audio => {
-                        audio.pause();
-                        audio.currentTime = 0;
-                    });
-                } else {
-                    currentAudio.pause();
-                    currentAudio.currentTime = 0;
-                }
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
                 currentAudio = null;
-                setStatus('Audio stopped');
+                addMessage('Audio stopped', 'assistant');
             }
         }
 
         function playAudio(key) {
-            // Stop currently playing audio if any
             stopAudio();
             
-            // Play the corresponding audio file
             const audioFile = audioMap[key];
             if (!audioFile) {
-                setStatus('Command not recognized', 'error');
+                addMessage('Command not recognized', 'assistant');
                 return;
             }
+            
+            const typing = showTyping();
             
             currentAudio = new Audio(audioFile);
             currentAudio.play()
                 .then(() => {
-                    setStatus(`Playing: ${getAudioDescription(key)}`, 'active');
+                    messageArea.removeChild(typing);
+                    addMessage(getAudioDescription(key), 'assistant');
                 })
                 .catch(error => {
-                    setStatus('Error playing audio', 'error');
+                    messageArea.removeChild(typing);
+                    addMessage('Error playing audio', 'assistant');
                     console.error('Audio playback error:', error);
                 });
         }
 
-        function playFullIntroduction() {
-            stopAudio();
-            
-            const introSequence = audioMap['full'];
-            if (!introSequence) return;
-            
-            currentAudio = [];
-            
-            function playNext(index) {
-                if (index >= introSequence.length) {
-                    setStatus('Introduction complete');
-                    currentAudio = null;
-                    return;
-                }
-                
-                const audio = new Audio(introSequence[index]);
-                currentAudio.push(audio);
-                
-                audio.play()
-                    .then(() => {
-                        setStatus(`Playing: ${getAudioDescriptionForFile(introSequence[index])}`, 'active');
-                        audio.onended = () => playNext(index + 1);
-                    })
-                    .catch(error => {
-                        setStatus('Error playing sequence', 'error');
-                        console.error('Sequence playback error:', error);
-                    });
-            }
-            
-            playNext(0);
-        }
-
         function getAudioDescription(key) {
             const descriptions = {
-                'w': 'Welcome message',
-                'b': 'Breakfast information',
-                'e': 'Elevator locations',
-                'a': 'Hotel amenities',
-                'wifi': 'Wi-Fi information',
-                'g': 'Gym details',
-                'p': 'Pool information',
-                's': 'Guest services'
+                'welcome': 'Welcome to Best Western Hopkinsville! I\'m SHREE, your virtual assistant.',
+                'breakfast': 'Our complimentary breakfast is served daily from 6:30 to 9:30 AM in the lobby.',
+                'elevator': 'Elevators are located in the center of each hallway and near side entrances.',
+                'amenities': 'We offer an outdoor pool, fitness center, and complimentary WiFi.',
+                'wifi': 'Connect to "BW_Guest" with the password provided at check-in.',
+                'pool': 'The heated pool is open from 9:30 AM to 9 PM daily. No lifeguard on duty.',
+                'services': 'Front desk services include concierge, luggage storage, and local recommendations.',
+                'checkin': 'Check-in time is 3 PM. Early check-in is subject to availability.',
+                'housekeeping': 'Daily service from 9 AM to 3 PM. Dial 0 for immediate requests.',
+                'parking': 'Complimentary parking is available for guests in our main lot.'
             };
-            return descriptions[key] || 'Information';
-        }
-        
-        function getAudioDescriptionForFile(filename) {
-            const fileMap = {
-                'https://github.com/Bestwesten/Shree/raw/cd93deb12e39a02cb60f5ec3decbc2338f4f5121/audio/welcome.mp3': 'Welcome message',
-                'https://github.com/Bestwesten/Shree/raw/cd93deb12e39a02cb60f5ec3decbc2338f4f5121/audio/breakfast.mp3': 'Breakfast information',
-                'https://github.com/Bestwesten/Shree/raw/cd93deb12e39a02cb60f5ec3decbc2338f4f5121/audio/elevator.mp3': 'Elevator locations',
-                'https://github.com/Bestwesten/Shree/raw/cd93deb12e39a02cb60f5ec3decbc2338f4f5121/audio/amenities.mp3': 'Hotel amenities',
-                'https://github.com/Bestwesten/Shree/raw/cd93deb12e39a02cb60f5ec3decbc2338f4f5121/audio/wifi.mp3': 'Wi-Fi information',
-                'https://github.com/Bestwesten/Shree/raw/cd93deb12e39a02cb60f5ec3decbc2338f4f5121/audio/gym.mp3': 'Gym details',
-                'https://github.com/Bestwesten/Shree/raw/cd93deb12e39a02cb60f5ec3decbc2338f4f5121/audio/pool.mp3': 'Pool information',
-                'https://github.com/Bestwesten/Shree/raw/cd93deb12e39a02cb60f5ec3decbc2338f4f5121/audio/services.mp3': 'Guest services'
-            };
-            return fileMap[filename] || 'Information';
+            return descriptions[key] || 'Information about ' + key;
         }
     </script>
 </body>
