@@ -247,6 +247,49 @@
             background: rgba(0, 53, 128, 0.2);
         }
         
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .modal-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        
+        .modal-input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: inherit;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
         @media (max-width: 480px) {
             .assistant-container {
                 height: 100vh;
@@ -282,12 +325,27 @@
                 <div class="suggestion-chip" data-key="pool">Pool Hours</div>
                 <div class="suggestion-chip" data-key="services">Services</div>
                 <div class="suggestion-chip" data-key="gym">Gym/Fitness</div>
+                <div class="suggestion-chip" data-key="emergency">Emergency</div>
+                <div class="suggestion-chip" data-key="policies">Policies</div>
+                <div class="suggestion-chip" data-key="manager">Manager</div>
             </div>
         </div>
         
         <div class="action-area">
             <button id="stopButton" class="btn btn-stop">Stop Audio</button>
             <button id="helpButton" class="btn">Quick Help</button>
+        </div>
+    </div>
+
+    <!-- Message Modal -->
+    <div class="modal" id="messageModal">
+        <div class="modal-content">
+            <div class="modal-title">Send Message to Management</div>
+            <textarea id="messageText" class="modal-input" rows="4" placeholder="Type your message here..."></textarea>
+            <div class="modal-buttons">
+                <button id="cancelMessage" class="btn">Cancel</button>
+                <button id="sendMessage" class="btn">Send</button>
+            </div>
         </div>
     </div>
 
@@ -305,6 +363,10 @@
             'housekeeping': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/housekeeping.mp3',
             'parking': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/parking.mp3',
             'gym': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/gym.mp3',
+            'emergency': 'https://github.com/Bestwesten/Shree/raw/f5948c7a3cf649ebca2c67de33687a6979b0c3e0/audio/emergency.mp3',
+            'policies': 'https://github.com/Bestwesten/Shree/raw/f5948c7a3cf649ebca2c67de33687a6979b0c3e0/audio/policies.mp3',
+            'manager': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/manager.mp3',
+            'review': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/review.mp3',
             'help': [
                 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/welcome.mp3',
                 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/amenities.mp3',
@@ -442,6 +504,60 @@
             'work out': 'gym',
             'treadmill': 'gym',
             
+            // Emergency commands
+            'emergency': 'emergency',
+            'emergencies': 'emergency',
+            'help me': 'emergency',
+            'urgent': 'emergency',
+            'danger': 'emergency',
+            '911': 'emergency',
+            'police': 'emergency',
+            'fire': 'emergency',
+            'medical': 'emergency',
+            'accident': 'emergency',
+            
+            // Policies commands
+            'policies': 'policies',
+            'policy': 'policies',
+            'rules': 'policies',
+            'regulations': 'policies',
+            'procedures': 'policies',
+            'guidelines': 'policies',
+            'hotel rules': 'policies',
+            'house rules': 'policies',
+            
+            // Manager commands
+            'manager': 'manager',
+            'manager on duty': 'manager',
+            'supervisor': 'manager',
+            'boss': 'manager',
+            'management': 'manager',
+            'speak to manager': 'manager',
+            'contact manager': 'manager',
+            'head': 'manager',
+            'director': 'manager',
+            
+            // Review commands
+            'review': 'review',
+            'feedback': 'review',
+            'rating': 'review',
+            'comment': 'review',
+            'survey': 'review',
+            'evaluation': 'review',
+            'rate': 'review',
+            'how was it': 'review',
+            'opinion': 'review',
+            
+            // Send message commands
+            'send message': 'send_message',
+            'text manager': 'send_message',
+            'contact management': 'send_message',
+            'message management': 'send_message',
+            'send text': 'send_message',
+            'send msg': 'send_message',
+            'text management': 'send_message',
+            'notify manager': 'send_message',
+            
             // Stop commands
             'stop': 'stop',
             'quiet': 'stop',
@@ -455,13 +571,18 @@
             'end': 'stop',
             'cancel': 'stop',
             'no more': 'stop',
-            'that\'s enough': 'stop'
+            'that\'s enough': 'stop',
+            'stop talking': 'stop',
+            'be quiet': 'stop',
+            'quiet down': 'stop'
         };
 
         // Global variables
         let currentAudio = null;
         let recognition = null;
+        let isMuted = false;
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const managementPhoneNumber = '5134036508';
 
         // DOM elements
         const micStatusText = document.getElementById('micStatusText');
@@ -469,6 +590,10 @@
         const stopButton = document.getElementById('stopButton');
         const helpButton = document.getElementById('helpButton');
         const suggestionChips = document.querySelectorAll('.suggestion-chip');
+        const messageModal = document.getElementById('messageModal');
+        const messageText = document.getElementById('messageText');
+        const cancelMessage = document.getElementById('cancelMessage');
+        const sendMessage = document.getElementById('sendMessage');
 
         // Initialize with microphone always on
         document.addEventListener('DOMContentLoaded', function() {
@@ -480,8 +605,16 @@
                 });
             });
 
-            stopButton.addEventListener('click', stopAudio);
+            stopButton.addEventListener('click', toggleMute);
             helpButton.addEventListener('click', () => playAudio('help'));
+            
+            // Message modal handlers
+            cancelMessage.addEventListener('click', () => {
+                messageModal.style.display = 'none';
+                messageText.value = '';
+            });
+            
+            sendMessage.addEventListener('click', sendMessageToManagement);
             
             // Start microphone immediately
             startMicrophone();
@@ -527,10 +660,14 @@
                 recognition.lang = 'en-US';
 
                 recognition.onstart = function() {
-                    micStatusText.innerHTML = '<div class="status-dot" style="background:var(--accent)"></div><span>Listening</span>';
+                    if (!isMuted) {
+                        micStatusText.innerHTML = '<div class="status-dot" style="background:var(--accent)"></div><span>Listening</span>';
+                    }
                 };
 
                 recognition.onresult = function(event) {
+                    if (isMuted) return;
+                    
                     const result = event.results[event.results.length - 1];
                     
                     if (isMobile && !result.isFinal) {
@@ -554,8 +691,10 @@
                     }
                     
                     if (matchedKey === 'stop') {
-                        stopAudio();
-                        addMessage('Audio stopped', 'assistant');
+                        toggleMute();
+                        addMessage('Audio muted. Say "unmute" to resume listening.', 'assistant');
+                    } else if (matchedKey === 'send_message') {
+                        promptForMessage();
                     } else if (matchedKey) {
                         playAudio(matchedKey);
                     } else {
@@ -565,7 +704,9 @@
 
                 recognition.onerror = function(event) {
                     console.error('Speech recognition error:', event.error);
-                    micStatusText.innerHTML = '<div class="status-dot" style="background:var(--error)"></div><span>Error</span>';
+                    if (!isMuted) {
+                        micStatusText.innerHTML = '<div class="status-dot" style="background:var(--error)"></div><span>Error</span>';
+                    }
                     
                     // Automatically restart on error
                     setTimeout(() => {
@@ -575,11 +716,11 @@
 
                 recognition.onend = function() {
                     // Automatically restart when ended
-                    if (recognition) recognition.start();
+                    if (recognition && !isMuted) recognition.start();
                 };
 
                 // Start listening
-                recognition.start();
+                if (!isMuted) recognition.start();
 
             } catch(e) {
                 console.error('Speech recognition failed:', e);
@@ -588,6 +729,21 @@
                 
                 // Try again after 5 seconds
                 setTimeout(initVoiceRecognition, 5000);
+            }
+        }
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            
+            if (isMuted) {
+                stopAudio();
+                micStatusText.innerHTML = '<div class="status-dot" style="background:var(--error)"></div><span>Muted</span>';
+                stopButton.textContent = 'Unmute';
+                if (recognition) recognition.stop();
+            } else {
+                micStatusText.innerHTML = '<div class="status-dot" style="background:var(--accent)"></div><span>Listening</span>';
+                stopButton.textContent = 'Mute';
+                if (recognition) recognition.start();
             }
         }
 
@@ -628,6 +784,8 @@
         }
 
         function playAudio(key) {
+            if (isMuted) return;
+            
             stopAudio();
             
             const audioFile = audioMap[key];
@@ -694,9 +852,37 @@
                 'housekeeping': 'Daily service runs from 9 AM to 3 PM. For immediate needs, hang the "Service Please" tag.',
                 'parking': 'Complimentary parking is available for guests. Oversized vehicles should park in designated areas.',
                 'gym': 'Our 24-hour fitness center is located on the first floor near the elevators. Equipment includes treadmills and free weights.',
+                'emergency': 'For emergencies, dial 911 immediately. For hotel emergencies, dial 0 from your room phone or contact the front desk.',
+                'policies': 'Our hotel policies include a no-smoking policy in all rooms, quiet hours from 10 PM to 7 AM, and a check-out time of 11 AM.',
+                'manager': 'The manager on duty can be contacted at the front desk 24/7 for any special requests or concerns.',
+                'review': 'We appreciate your feedback! Please consider leaving us a review on your preferred travel platform.',
                 'help': 'I can help with: breakfast hours, amenities, WiFi, pool information, services, and more!'
             };
             return descriptions[key] || 'Here\'s information about that';
+        }
+
+        function promptForMessage() {
+            messageModal.style.display = 'flex';
+            messageText.focus();
+        }
+
+        function sendMessageToManagement() {
+            const message = messageText.value.trim();
+            if (!message) {
+                addMessage('Please enter a message to send', 'assistant');
+                return;
+            }
+
+            // In a real implementation, you would send this via an SMS API
+            // For demo purposes, we'll just show a confirmation
+            addMessage(`Message to management: "${message}"`, 'user');
+            addMessage('Your message has been sent to management. They will respond as soon as possible.', 'assistant');
+            
+            // Here's how you would actually send it (commented out for safety)
+            // window.open(`sms:${managementPhoneNumber}?body=${encodeURIComponent(message)}`, '_blank');
+            
+            messageModal.style.display = 'none';
+            messageText.value = '';
         }
     </script>
 </body>
