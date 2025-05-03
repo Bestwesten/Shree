@@ -7,8 +7,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #003580; /* Best Western blue */
-            --secondary: #FFB606; /* Best Western gold */
+            --primary: #003580;
+            --secondary: #FFB606;
             --accent: #2ecc71;
             --dark: #2c3e50;
             --light: #ecf0f1;
@@ -210,6 +210,15 @@
             border: 1px solid rgba(0, 0, 0, 0.1);
         }
         
+        .mobile-help {
+            background-color: #fff8e1;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            border-left: 4px solid #ffc107;
+        }
+        
         @media (max-width: 768px) {
             .container {
                 margin: 15px;
@@ -231,7 +240,6 @@
         <h1>Best Western Hopkinsville Welcome Guide</h1>
         <p class="subtitle">Your Comfortable Stay in Hopkinsville, KY</p>
         
-        <!-- Local image reference - save this file in the same directory -->
         <img src="best-western-hopkinsville.jpg" alt="Best Western Hopkinsville" class="hotel-image">
         
         <div class="section">
@@ -247,6 +255,14 @@
                 </button>
                 <div class="voice-commands">
                     Try saying: "Welcome", "Breakfast", "Elevator", or "Stop"
+                </div>
+                <div id="mobileHelp" class="mobile-help" style="display: none;">
+                    <strong>Mobile Device Tips:</strong>
+                    <ul>
+                        <li>Make sure Chrome has microphone permissions in your device settings</li>
+                        <li>Try speaking clearly in a quiet environment</li>
+                        <li>If issues persist, try refreshing the page</li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -353,17 +369,18 @@
         const stopButton = document.getElementById('stopButton');
         const playAllButton = document.getElementById('playAllButton');
         const controlButtons = document.querySelectorAll('.control-btn[data-key]');
+        const mobileHelp = document.getElementById('mobileHelp');
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            // Check if running as local file
-            if (isLocalFile) {
-                micStatusText.innerHTML = '<span style="color:#e74c3c">Note: For Android, use Firefox or a web server</span>';
+            // Show mobile help if on mobile
+            if (isMobile) {
+                mobileHelp.style.display = 'block';
             }
 
-            // Add mobile-specific instructions
-            if (isMobile) {
-                micStatusText.innerHTML += '<br><span style="color:#3498db">On mobile devices, ensure Chrome has microphone permissions in system settings.</span>';
+            // Check if running as local file
+            if (isLocalFile) {
+                micStatusText.innerHTML = '<span style="color:#e74c3c">Note: For best results on mobile, use HTTPS connection</span>';
             }
 
             // Setup button click handlers
@@ -385,19 +402,37 @@
             
             // Refresh microphone access
             refreshButton.addEventListener('click', function() {
-                if (recognition) {
-                    recognition.stop();
-                }
-                if (window.localStream) {
-                    window.localStream.getTracks().forEach(track => track.stop());
-                    window.localStream = null;
-                }
+                resetMicrophone();
                 setTimeout(requestMicrophonePermission, 500);
             });
+
+            // Try to initialize microphone automatically on mobile
+            if (isMobile && !isLocalFile) {
+                setTimeout(requestMicrophonePermission, 1000);
+            }
         });
+
+        function resetMicrophone() {
+            if (recognition) {
+                try {
+                    recognition.stop();
+                } catch(e) {
+                    console.log('Error stopping recognition:', e);
+                }
+                recognition = null;
+            }
+            if (window.localStream) {
+                window.localStream.getTracks().forEach(track => track.stop());
+                window.localStream = null;
+            }
+            permissionButton.style.display = 'block';
+            refreshButton.style.display = 'none';
+            micStatusText.textContent = 'Microphone access required';
+        }
 
         function requestMicrophonePermission() {
             if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                // On mobile devices, we need to trigger this from a user gesture
                 navigator.mediaDevices.getUserMedia({ audio: true })
                     .then(function(stream) {
                         // Permission granted
@@ -420,12 +455,13 @@
                         // Specific error handling
                         if (err.name === 'NotAllowedError') {
                             setStatus('Microphone access blocked. Please check browser permissions.', 'error');
+                            if (isMobile) {
+                                micStatusText.innerHTML += '<br><span style="color:#3498db">Go to device settings > Apps > Chrome > Permissions > Microphone</span>';
+                            }
                         } else if (err.name === 'NotFoundError') {
                             setStatus('No microphone found. Please check your device.', 'error');
-                        }
-                        
-                        if (isLocalFile) {
-                            micStatusText.innerHTML += '<br><span style="color:#e67e22">For local files on Android, use Firefox or a web server</span>';
+                        } else if (err.name === 'NotReadableError') {
+                            setStatus('Microphone is already in use by another application.', 'error');
                         }
                     });
             } else {
@@ -438,18 +474,33 @@
         function initVoiceRecognition() {
             try {
                 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                if (!SpeechRecognition) {
+                    throw new Error('Speech recognition not available');
+                }
+                
                 recognition = new SpeechRecognition();
                 recognition.continuous = true;
                 recognition.interimResults = false;
                 recognition.maxAlternatives = 1;
-                recognition.timeout = 10000; // 10 seconds timeout
+                
+                // Adjust settings for mobile devices
+                if (isMobile) {
+                    recognition.lang = 'en-US';
+                    recognition.interimResults = true;
+                }
 
                 recognition.onstart = function() {
                     setStatus('Listening for commands...', 'active');
                 };
 
                 recognition.onresult = function(event) {
-                    const speechResult = event.results[event.results.length - 1][0].transcript.toLowerCase().trim();
+                    // For mobile, we need to check interim results
+                    let result = event.results[event.results.length - 1];
+                    if (isMobile && !result.isFinal) {
+                        return; // Skip interim results on mobile
+                    }
+                    
+                    const speechResult = result[0].transcript.toLowerCase().trim();
                     setStatus(`Heard: "${speechResult}"`, 'active');
                     
                     // Find the best matching command
@@ -479,6 +530,8 @@
                         setStatus('Microphone access denied. Please refresh and allow access.', 'error');
                     } else if (event.error === 'no-speech') {
                         setStatus('No speech detected. Try again.', 'error');
+                    } else if (event.error === 'audio-capture') {
+                        setStatus('No microphone found. Please check your device.', 'error');
                     }
                     
                     // Try to restart recognition after error
@@ -495,16 +548,26 @@
 
                 recognition.onend = function() {
                     // Automatically restart recognition when it ends
-                    if (recognition) recognition.start();
+                    if (recognition) {
+                        try {
+                            recognition.start();
+                        } catch(e) {
+                            console.error('Failed to restart recognition:', e);
+                        }
+                    }
                 };
 
                 // Start recognition
                 recognition.start();
 
             } catch(e) {
-                console.error('Speech recognition not supported', e);
+                console.error('Speech recognition initialization failed', e);
                 micStatusText.innerHTML = '<span style="color:#e74c3c">Voice commands not supported</span>';
                 setStatus('Voice commands not supported', 'error');
+                
+                if (isMobile) {
+                    micStatusText.innerHTML += '<br><span style="color:#3498db">Try using Chrome browser if not already</span>';
+                }
             }
         }
 
@@ -531,12 +594,6 @@
                 }
                 currentAudio = null;
                 setStatus('Audio stopped');
-            }
-            
-            // Stop the microphone stream if it exists
-            if (window.localStream) {
-                window.localStream.getTracks().forEach(track => track.stop());
-                window.localStream = null;
             }
         }
 
