@@ -229,7 +229,7 @@
             <p class="subtitle">Voice-Activated Guest Guide</p>
         </header>
         
-        <img src="best-western-hopkinsville.jpg" alt="Best Western Hopkinsville" class="hotel-image">
+        <img src="https://github.com/Bestwesten/Shree/raw/cd93deb12e39a02cb60f5ec3decbc2338f4f5121/images/hotel.jpg" alt="Best Western Hopkinsville" class="hotel-image">
         
         <section class="voice-section">
             <div class="voice-status">
@@ -274,7 +274,7 @@
                     <div class="command-key">Amenities</div>
                     <div>Hotel Features</div>
                 </button>
-                <button class="command-btn" data-key="w">
+                <button class="command-btn" data-key="wifi">
                     <div class="command-key">Wi-Fi</div>
                     <div>Connection Info</div>
                 </button>
@@ -308,17 +308,21 @@
     </div>
 
     <script>
-        // Audio file mapping
+        // Audio file mapping with GitHub raw URLs
         const audioMap = {
-            'w': 'audio/welcome.mp3',
-            'b': 'audio/breakfast.mp3',
-            'e': 'audio/elevator.mp3',
-            'a': 'audio/amenities.mp3',
-            'w': 'audio/wifi.mp3',
-            'g': 'audio/gym.mp3',
-            'p': 'audio/pool.mp3',
-            's': 'audio/services.mp3',
-            'full': ['audio/welcome.mp3', 'audio/amenities.mp3', 'audio/services.mp3']
+            'w': 'https://github.com/Bestwesten/Shree/raw/cd93deb12e39a02cb60f5ec3decbc2338f4f5121/audio/welcome.mp3',
+            'b': 'https://github.com/Bestwesten/Shree/raw/cd93deb12e39a02cb60f5ec3decbc2338f4f5121/audio/breakfast.mp3',
+            'e': 'https://github.com/Bestwesten/Shree/raw/cd93deb12e39a02cb60f5ec3decbc2338f4f5121/audio/elevator.mp3',
+            'a': 'https://github.com/Bestwesten/Shree/raw/cd93deb12e39a02cb60f5ec3decbc2338f4f5121/audio/amenities.mp3',
+            'wifi': 'https://github.com/Bestwesten/Shree/raw/cd93deb12e39a02cb60f5ec3decbc2338f4f5121/audio/wifi.mp3',
+            'g': 'https://github.com/Bestwesten/Shree/raw/cd93deb12e39a02cb60f5ec3decbc2338f4f5121/audio/gym.mp3',
+            'p': 'https://github.com/Bestwesten/Shree/raw/cd93deb12e39a02cb60f5ec3decbc2338f4f5121/audio/pool.mp3',
+            's': 'https://github.com/Bestwesten/Shree/raw/cd93deb12e39a02cb60f5ec3decbc2338f4f5121/audio/services.mp3',
+            'full': [
+                'https://github.com/Bestwesten/Shree/raw/cd93deb12e39a02cb60f5ec3decbc2338f4f5121/audio/welcome.mp3',
+                'https://github.com/Bestwesten/Shree/raw/cd93deb12e39a02cb60f5ec3decbc2338f4f5121/audio/amenities.mp3',
+                'https://github.com/Bestwesten/Shree/raw/cd93deb12e39a02cb60f5ec3decbc2338f4f5121/audio/services.mp3'
+            ]
         };
 
         // Command phrases mapping
@@ -334,8 +338,8 @@
             'amenities': 'a',
             'features': 'a',
             'facilities': 'a',
-            'wifi': 'w',
-            'internet': 'w',
+            'wifi': 'wifi',
+            'internet': 'wifi',
             'gym': 'g',
             'fitness': 'g',
             'workout': 'g',
@@ -619,7 +623,7 @@
                 'b': 'Breakfast information',
                 'e': 'Elevator locations',
                 'a': 'Hotel amenities',
-                'w': 'Wi-Fi information',
+                'wifi': 'Wi-Fi information',
                 'g': 'Gym details',
                 'p': 'Pool information',
                 's': 'Guest services'
@@ -629,14 +633,14 @@
         
         function getAudioDescriptionForFile(filename) {
             const fileMap = {
-                'audio/welcome.mp3': 'Welcome message',
-                'audio/breakfast.mp3': 'Breakfast information',
-                'audio/elevator.mp3': 'Elevator locations',
-                'audio/amenities.mp3': 'Hotel amenities',
-                'audio/wifi.mp3': 'Wi-Fi information',
-                'audio/gym.mp3': 'Gym details',
-                'audio/pool.mp3': 'Pool information',
-                'audio/services.mp3': 'Guest services'
+                'https://github.com/Bestwesten/Shree/raw/cd93deb12e39a02cb60f5ec3decbc2338f4f5121/audio/welcome.mp3': 'Welcome message',
+                'https://github.com/Bestwesten/Shree/raw/cd93deb12e39a02cb60f5ec3decbc2338f4f5121/audio/breakfast.mp3': 'Breakfast information',
+                'https://github.com/Bestwesten/Shree/raw/cd93deb12e39a02cb60f5ec3decbc2338f4f5121/audio/elevator.mp3': 'Elevator locations',
+                'https://github.com/Bestwesten/Shree/raw/cd93deb12e39a02cb60f5ec3decbc2338f4f5121/audio/amenities.mp3': 'Hotel amenities',
+                'https://github.com/Bestwesten/Shree/raw/cd93deb12e39a02cb60f5ec3decbc2338f4f5121/audio/wifi.mp3': 'Wi-Fi information',
+                'https://github.com/Bestwesten/Shree/raw/cd93deb12e39a02cb60f5ec3decbc2338f4f5121/audio/gym.mp3': 'Gym details',
+                'https://github.com/Bestwesten/Shree/raw/cd93deb12e39a02cb60f5ec3decbc2338f4f5121/audio/pool.mp3': 'Pool information',
+                'https://github.com/Bestwesten/Shree/raw/cd93deb12e39a02cb60f5ec3decbc2338f4f5121/audio/services.mp3': 'Guest services'
             };
             return fileMap[filename] || 'Information';
         }
