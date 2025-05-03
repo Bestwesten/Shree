@@ -1,145 +1,645 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Local Voice Command System</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Voice Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #003580;
+            --secondary: #FFB606;
+            --accent: #2ecc71;
+            --error: #e74c3c;
+            --light: #f8f9fa;
+            --dark: #2c3e50;
+            --white: #ffffff;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
             max-width: 800px;
             margin: 0 auto;
-            padding: 20px;
-            text-align: center;
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
         }
-        button {
-            background-color: #4CAF50;
-            border: none;
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), #0047ab);
             color: white;
-            padding: 15px 32px;
+            padding: 25px;
             text-align: center;
-            text-decoration: none;
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        .hotel-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .voice-section {
+            padding: 25px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .voice-status {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .mic-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            position: relative;
+        }
+        
+        .mic-icon::before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background-color: var(--error);
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            70% { transform: scale(1.2); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .status-text {
+            font-weight: 500;
+        }
+        
+        .btn {
             display: inline-block;
-            font-size: 16px;
-            margin: 10px 2px;
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1rem;
             cursor: pointer;
-            border-radius: 5px;
+            transition: all 0.3s;
+            margin: 5px 0;
+            width: 100%;
+            text-align: center;
         }
-        #status {
-            margin: 20px;
+        
+        .btn:hover {
+            background-color: #27ae60;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #e6a800;
+        }
+        
+        .command-list {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .commands {
+            padding: 25px;
+        }
+        
+        .command-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .command-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .command-btn:hover {
+            background-color: #002b66;
+            transform: translateY(-2px);
+        }
+        
+        .command-key {
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+        
+        .status-message {
             padding: 15px;
-            border-radius: 5px;
+            margin-top: 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 500;
         }
-        .listening {
-            background-color: #e6f7ff;
-            border: 1px solid #b3e0ff;
+        
+        .status-active {
+            background-color: #e8f5e9;
+            color: #2e7d32;
         }
-        .error {
+        
+        .status-error {
             background-color: #ffebee;
-            border: 1px solid #ffcdd2;
+            color: #c62828;
+        }
+        
+        .mobile-help {
+            background-color: #fff8e1;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .mobile-help h4 {
+            margin-bottom: 8px;
+            color: #e65100;
+        }
+        
+        .mobile-help ul {
+            padding-left: 20px;
+        }
+        
+        .mobile-help li {
+            margin-bottom: 5px;
+        }
+        
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            
+            .command-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Hotel Voice Command System</h1>
-    <p>Speak commands after pressing the button</p>
-    
-    <button id="startBtn">Start Listening</button>
-    <button id="stopBtn">Stop Listening</button>
-    
-    <div id="status">Press "Start Listening" to begin</div>
-    
-    <h3>Available Commands:</h3>
-    <ul style="text-align: left; display: inline-block;">
-        <li>"Welcome" - Welcome message</li>
-        <li>"Breakfast" - Breakfast information</li>
-        <li>"Elevator" - Elevator locations</li>
-        <li>"Amenities" - Hotel amenities</li>
-        <li>"Stop" - Stop audio</li>
-    </ul>
+    <div class="container">
+        <header>
+            <h1>Best Western Hopkinsville</h1>
+            <p class="subtitle">Voice-Activated Guest Guide</p>
+        </header>
+        
+        <img src="best-western-hopkinsville.jpg" alt="Best Western Hopkinsville" class="hotel-image">
+        
+        <section class="voice-section">
+            <div class="voice-status">
+                <div class="mic-icon"></div>
+                <div class="status-text" id="micStatusText">Microphone access required</div>
+            </div>
+            
+            <button id="permissionButton" class="btn">Enable Voice Commands</button>
+            <button id="refreshButton" class="btn btn-secondary" style="display: none;">Restart Microphone</button>
+            
+            <div class="command-list">
+                <p>Try saying: "Welcome", "Breakfast", "Elevator", or "Stop"</p>
+            </div>
+            
+            <div id="mobileHelp" class="mobile-help" style="display: none;">
+                <h4>Mobile Device Tips</h4>
+                <ul>
+                    <li>Tap "Enable Voice Commands" and allow microphone access</li>
+                    <li>Speak clearly in a quiet environment</li>
+                    <li>If voice commands don't work, try refreshing the page</li>
+                    <li>Ensure Chrome has microphone permissions in device settings</li>
+                </ul>
+            </div>
+        </section>
+        
+        <section class="commands">
+            <h2>Quick Commands</h2>
+            <div class="command-grid">
+                <button class="command-btn" data-key="w">
+                    <div class="command-key">Welcome</div>
+                    <div>Welcome Message</div>
+                </button>
+                <button class="command-btn" data-key="b">
+                    <div class="command-key">Breakfast</div>
+                    <div>Dining Info</div>
+                </button>
+                <button class="command-btn" data-key="e">
+                    <div class="command-key">Elevator</div>
+                    <div>Locations</div>
+                </button>
+                <button class="command-btn" data-key="a">
+                    <div class="command-key">Amenities</div>
+                    <div>Hotel Features</div>
+                </button>
+                <button class="command-btn" data-key="w">
+                    <div class="command-key">Wi-Fi</div>
+                    <div>Connection Info</div>
+                </button>
+                <button class="command-btn" data-key="g">
+                    <div class="command-key">Gym</div>
+                    <div>Hours & Info</div>
+                </button>
+                <button class="command-btn" data-key="p">
+                    <div class="command-key">Pool</div>
+                    <div>Hours & Rules</div>
+                </button>
+                <button class="command-btn" data-key="s">
+                    <div class="command-key">Services</div>
+                    <div>Guest Services</div>
+                </button>
+            </div>
+            
+            <div class="command-grid" style="margin-top: 15px;">
+                <button id="stopButton" class="command-btn" style="background-color: var(--error);">
+                    <div class="command-key">⏹</div>
+                    <div>Stop Audio</div>
+                </button>
+                <button id="playAllButton" class="command-btn" style="background-color: var(--accent);">
+                    <div class="command-key">▶</div>
+                    <div>Play All Info</div>
+                </button>
+            </div>
+        </section>
+        
+        <div id="status" class="status-message">Ready to assist you</div>
+    </div>
 
     <script>
-        // Simple audio responses (using text-to-speech instead of audio files)
-        const responses = {
-            'welcome': 'Welcome to our hotel. We are pleased to have you as our guest.',
-            'breakfast': 'Breakfast is served from 6:30 AM to 10:00 AM in the main dining area.',
-            'elevator': 'Elevators are located near the main lobby and at both ends of the hallway.',
-            'amenities': 'We offer free WiFi, a fitness center, swimming pool, and 24-hour room service.',
-            'default': 'Sorry, I didn\'t understand that command.'
+        // Audio file mapping
+        const audioMap = {
+            'w': 'audio/welcome.mp3',
+            'b': 'audio/breakfast.mp3',
+            'e': 'audio/elevator.mp3',
+            'a': 'audio/amenities.mp3',
+            'w': 'audio/wifi.mp3',
+            'g': 'audio/gym.mp3',
+            'p': 'audio/pool.mp3',
+            's': 'audio/services.mp3',
+            'full': ['audio/welcome.mp3', 'audio/amenities.mp3', 'audio/services.mp3']
         };
 
-        const statusDiv = document.getElementById('status');
-        const startBtn = document.getElementById('startBtn');
-        const stopBtn = document.getElementById('stopBtn');
-        let recognition;
+        // Command phrases mapping
+        const commandMap = {
+            'welcome': 'w',
+            'greeting': 'w',
+            'hello': 'w',
+            'breakfast': 'b',
+            'dining': 'b',
+            'food': 'b',
+            'elevator': 'e',
+            'lift': 'e',
+            'amenities': 'a',
+            'features': 'a',
+            'facilities': 'a',
+            'wifi': 'w',
+            'internet': 'w',
+            'gym': 'g',
+            'fitness': 'g',
+            'workout': 'g',
+            'pool': 'p',
+            'swimming': 'p',
+            'services': 's',
+            'help': 's',
+            'stop': 'stop',
+            'pause': 'stop',
+            'quiet': 'stop',
+            'all': 'full',
+            'everything': 'full',
+            'play all': 'full'
+        };
 
-        // Check for browser support
-        if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-            statusDiv.innerHTML = 'Speech recognition not supported in this browser. Try Chrome or Edge.';
-            startBtn.disabled = true;
-        } else {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            recognition = new SpeechRecognition();
-            recognition.continuous = true;
-            recognition.interimResults = false;
-            recognition.lang = 'en-US';
+        // Global variables
+        let currentAudio = null;
+        let recognition = null;
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-            recognition.onstart = function() {
-                statusDiv.textContent = 'Listening... Speak a command now';
-                statusDiv.className = 'listening';
-            };
+        // DOM elements
+        const micStatusText = document.getElementById('micStatusText');
+        const permissionButton = document.getElementById('permissionButton');
+        const refreshButton = document.getElementById('refreshButton');
+        const statusElement = document.getElementById('status');
+        const stopButton = document.getElementById('stopButton');
+        const playAllButton = document.getElementById('playAllButton');
+        const commandButtons = document.querySelectorAll('.command-btn[data-key]');
+        const mobileHelp = document.getElementById('mobileHelp');
 
-            recognition.onresult = function(event) {
-                const last = event.results.length - 1;
-                const command = event.results[last][0].transcript.toLowerCase().trim();
-                
-                statusDiv.textContent = `Heard: "${command}"`;
-                
-                // Simple command matching
-                let response;
-                if (command.includes('welcome')) {
-                    response = responses.welcome;
-                } else if (command.includes('breakfast')) {
-                    response = responses.breakfast;
-                } else if (command.includes('elevator') || command.includes('lift')) {
-                    response = responses.elevator;
-                } else if (command.includes('amenit')) { // catches "amenity" or "amenities"
-                    response = responses.amenities;
-                } else if (command.includes('stop')) {
-                    // Stop any current speech
-                    window.speechSynthesis.cancel();
-                    return;
-                } else {
-                    response = responses.default;
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show mobile help if on mobile
+            if (isMobile) {
+                mobileHelp.style.display = 'block';
+            }
+
+            // Setup button click handlers
+            commandButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const key = this.getAttribute('data-key');
+                    playAudio(key);
+                });
+            });
+
+            stopButton.addEventListener('click', stopAudio);
+            playAllButton.addEventListener('click', playFullIntroduction);
+            permissionButton.addEventListener('click', requestMicrophonePermission);
+            refreshButton.addEventListener('click', resetMicrophone);
+        });
+
+        function resetMicrophone() {
+            if (recognition) {
+                try {
+                    recognition.stop();
+                } catch(e) {
+                    console.log('Error stopping recognition:', e);
                 }
-                
-                // Speak the response
-                const utterance = new SpeechSynthesisUtterance(response);
-                window.speechSynthesis.speak(utterance);
-            };
-
-            recognition.onerror = function(event) {
-                statusDiv.textContent = 'Error: ' + event.error;
-                statusDiv.className = 'error';
-            };
-
-            recognition.onend = function() {
-                if (!recognition.manualStop) {
-                    // If not manually stopped, restart listening
-                    recognition.start();
-                }
-            };
+                recognition = null;
+            }
+            if (window.localStream) {
+                window.localStream.getTracks().forEach(track => track.stop());
+                window.localStream = null;
+            }
+            permissionButton.style.display = 'block';
+            refreshButton.style.display = 'none';
+            micStatusText.textContent = 'Microphone access required';
+            setStatus('Microphone reset. Tap "Enable Voice Commands" to start again.');
         }
 
-        startBtn.addEventListener('click', function() {
-            recognition.manualStop = false;
-            recognition.start();
-        });
+        function requestMicrophonePermission() {
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                setStatus('Voice commands not supported on this browser', 'error');
+                micStatusText.innerHTML = '<span style="color:var(--error)">Voice commands not supported</span>';
+                permissionButton.style.display = 'none';
+                return;
+            }
 
-        stopBtn.addEventListener('click', function() {
-            recognition.manualStop = true;
-            recognition.stop();
-            statusDiv.textContent = 'Microphone off';
-            statusDiv.className = '';
-        });
+            // On mobile devices, we need to trigger this from a user gesture
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(function(stream) {
+                    // Permission granted
+                    permissionButton.style.display = 'none';
+                    refreshButton.style.display = 'block';
+                    micStatusText.textContent = 'Listening for commands...';
+                    setStatus('Microphone ready - say a command', 'active');
+                    
+                    // Keep a reference to the stream
+                    window.localStream = stream;
+                    
+                    // Initialize voice recognition
+                    initVoiceRecognition();
+                })
+                .catch(function(err) {
+                    console.error("Microphone access error:", err);
+                    
+                    let errorMessage = 'Microphone access denied';
+                    if (err.name === 'NotAllowedError') {
+                        errorMessage = 'Microphone access blocked. Please allow in browser settings.';
+                        if (isMobile) {
+                            errorMessage += ' (Check device settings > Apps > Chrome > Permissions)';
+                        }
+                    } else if (err.name === 'NotFoundError') {
+                        errorMessage = 'No microphone found';
+                    } else if (err.name === 'NotReadableError') {
+                        errorMessage = 'Microphone is already in use';
+                    }
+                    
+                    setStatus(errorMessage, 'error');
+                    micStatusText.innerHTML = `<span style="color:var(--error)">${errorMessage}</span>`;
+                });
+        }
+
+        function initVoiceRecognition() {
+            try {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                if (!SpeechRecognition) {
+                    throw new Error('Speech recognition not available');
+                }
+                
+                recognition = new SpeechRecognition();
+                recognition.continuous = true;
+                recognition.interimResults = isMobile; // Use interim results on mobile
+                recognition.maxAlternatives = 1;
+                recognition.lang = 'en-US';
+
+                recognition.onstart = function() {
+                    micStatusText.textContent = 'Listening for commands...';
+                };
+
+                recognition.onresult = function(event) {
+                    // Get the most recent result
+                    const result = event.results[event.results.length - 1];
+                    
+                    // On mobile, we might get interim results that we should ignore
+                    if (isMobile && !result.isFinal) {
+                        return;
+                    }
+                    
+                    const transcript = result[0].transcript.toLowerCase().trim();
+                    setStatus(`Heard: "${transcript}"`, 'active');
+                    
+                    // Find the best matching command
+                    let matchedKey = null;
+                    for (const [phrase, key] of Object.entries(commandMap)) {
+                        if (transcript.includes(phrase)) {
+                            matchedKey = key;
+                            break;
+                        }
+                    }
+                    
+                    if (matchedKey === 'stop') {
+                        stopAudio();
+                    } else if (matchedKey === 'full') {
+                        playFullIntroduction();
+                    } else if (matchedKey) {
+                        playAudio(matchedKey);
+                    }
+                };
+
+                recognition.onerror = function(event) {
+                    console.error('Speech recognition error:', event.error);
+                    
+                    let errorMessage = 'Voice command error';
+                    if (event.error === 'not-allowed') {
+                        errorMessage = 'Microphone access denied';
+                    } else if (event.error === 'no-speech') {
+                        errorMessage = 'No speech detected';
+                    } else if (event.error === 'audio-capture') {
+                        errorMessage = 'Microphone not available';
+                    }
+                    
+                    setStatus(errorMessage, 'error');
+                    micStatusText.textContent = 'Microphone error';
+                    
+                    // Try to restart recognition after error
+                    setTimeout(() => {
+                        if (recognition) recognition.start();
+                    }, 2000);
+                };
+
+                recognition.onend = function() {
+                    // Automatically restart recognition when it ends
+                    if (recognition) recognition.start();
+                };
+
+                // Start recognition
+                recognition.start();
+
+            } catch(e) {
+                console.error('Speech recognition failed:', e);
+                setStatus('Voice commands not supported', 'error');
+                micStatusText.innerHTML = '<span style="color:var(--error)">Voice commands not available</span>';
+                permissionButton.style.display = 'none';
+            }
+        }
+
+        function setStatus(message, type = '') {
+            statusElement.textContent = message;
+            statusElement.className = 'status-message';
+            if (type === 'active') {
+                statusElement.classList.add('status-active');
+            } else if (type === 'error') {
+                statusElement.classList.add('status-error');
+            }
+        }
+
+        function stopAudio() {
+            if (currentAudio) {
+                if (Array.isArray(currentAudio)) {
+                    currentAudio.forEach(audio => {
+                        audio.pause();
+                        audio.currentTime = 0;
+                    });
+                } else {
+                    currentAudio.pause();
+                    currentAudio.currentTime = 0;
+                }
+                currentAudio = null;
+                setStatus('Audio stopped');
+            }
+        }
+
+        function playAudio(key) {
+            // Stop currently playing audio if any
+            stopAudio();
+            
+            // Play the corresponding audio file
+            const audioFile = audioMap[key];
+            if (!audioFile) {
+                setStatus('Command not recognized', 'error');
+                return;
+            }
+            
+            currentAudio = new Audio(audioFile);
+            currentAudio.play()
+                .then(() => {
+                    setStatus(`Playing: ${getAudioDescription(key)}`, 'active');
+                })
+                .catch(error => {
+                    setStatus('Error playing audio', 'error');
+                    console.error('Audio playback error:', error);
+                });
+        }
+
+        function playFullIntroduction() {
+            stopAudio();
+            
+            const introSequence = audioMap['full'];
+            if (!introSequence) return;
+            
+            currentAudio = [];
+            
+            function playNext(index) {
+                if (index >= introSequence.length) {
+                    setStatus('Introduction complete');
+                    currentAudio = null;
+                    return;
+                }
+                
+                const audio = new Audio(introSequence[index]);
+                currentAudio.push(audio);
+                
+                audio.play()
+                    .then(() => {
+                        setStatus(`Playing: ${getAudioDescriptionForFile(introSequence[index])}`, 'active');
+                        audio.onended = () => playNext(index + 1);
+                    })
+                    .catch(error => {
+                        setStatus('Error playing sequence', 'error');
+                        console.error('Sequence playback error:', error);
+                    });
+            }
+            
+            playNext(0);
+        }
+
+        function getAudioDescription(key) {
+            const descriptions = {
+                'w': 'Welcome message',
+                'b': 'Breakfast information',
+                'e': 'Elevator locations',
+                'a': 'Hotel amenities',
+                'w': 'Wi-Fi information',
+                'g': 'Gym details',
+                'p': 'Pool information',
+                's': 'Guest services'
+            };
+            return descriptions[key] || 'Information';
+        }
+        
+        function getAudioDescriptionForFile(filename) {
+            const fileMap = {
+                'audio/welcome.mp3': 'Welcome message',
+                'audio/breakfast.mp3': 'Breakfast information',
+                'audio/elevator.mp3': 'Elevator locations',
+                'audio/amenities.mp3': 'Hotel amenities',
+                'audio/wifi.mp3': 'Wi-Fi information',
+                'audio/gym.mp3': 'Gym details',
+                'audio/pool.mp3': 'Pool information',
+                'audio/services.mp3': 'Guest services'
+            };
+            return fileMap[filename] || 'Information';
+        }
     </script>
 </body>
 </html>
