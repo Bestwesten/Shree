@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Best Western Virtual Assistant</title>
+    <title>SHREE - Best Western Virtual Assistant</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -94,7 +94,7 @@
             width: 10px;
             height: 10px;
             border-radius: 50%;
-            background: var(--error);
+            background: var(--accent);
             margin-right: 8px;
             animation: pulse 1.5s infinite;
         }
@@ -103,10 +103,6 @@
             0% { transform: scale(1); opacity: 1; }
             70% { transform: scale(1.2); opacity: 0.7; }
             100% { transform: scale(1); opacity: 1; }
-        }
-        
-        .status-active .status-dot {
-            background: var(--accent);
         }
         
         h1 {
@@ -159,39 +155,39 @@
             border-top: 1px solid #eee;
             background: var(--white);
             flex-shrink: 0;
+            text-align: center;
         }
         
         .btn {
-            display: block;
-            background-color: var(--accent);
-            color: white;
+            display: inline-block;
+            background-color: var(--secondary);
+            color: var(--dark);
             border: none;
-            padding: 14px;
-            border-radius: 12px;
-            font-size: 1rem;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
             cursor: pointer;
             transition: all 0.3s;
-            width: 100%;
-            text-align: center;
             font-weight: 500;
-            box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
+            box-shadow: 0 4px 10px rgba(255, 182, 6, 0.3);
+            margin: 0 5px;
         }
         
         .btn:hover {
-            background-color: #27ae60;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(46, 204, 113, 0.4);
-        }
-        
-        .btn-secondary {
-            background-color: var(--secondary);
-            box-shadow: 0 4px 10px rgba(255, 182, 6, 0.3);
-            margin-top: 10px;
-        }
-        
-        .btn-secondary:hover {
             background-color: #e6a800;
+            transform: translateY(-2px);
             box-shadow: 0 6px 15px rgba(255, 182, 6, 0.4);
+        }
+        
+        .btn-stop {
+            background-color: var(--error);
+            color: white;
+            box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
+        }
+        
+        .btn-stop:hover {
+            background-color: #c0392b;
+            box-shadow: 0 6px 15px rgba(231, 76, 60, 0.4);
         }
         
         .typing-indicator {
@@ -267,28 +263,30 @@
                 <img src="https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/images/ai_avatar.png" alt="SHREE Virtual Assistant">
             </div>
             <h1>SHREE Virtual Assistant</h1>
-            <p class="subtitle">Your Best Western digital concierge</p>
+            <p class="subtitle">Always listening, ready to help</p>
             <div class="avatar-status" id="micStatusText">
                 <div class="status-dot"></div>
-                <span>Offline</span>
+                <span>Listening</span>
             </div>
         </div>
         
         <div class="message-area" id="messageArea">
             <div class="assistant-message message">
-                Hello! I'm SHREE, your virtual concierge. How may I assist you today?
+                Hello! I'm SHREE, your always-on virtual assistant. You can talk to me anytime about:
             </div>
             <div class="suggestions">
                 <div class="suggestion-chip" data-key="welcome">Welcome</div>
                 <div class="suggestion-chip" data-key="breakfast">Breakfast</div>
                 <div class="suggestion-chip" data-key="amenities">Amenities</div>
                 <div class="suggestion-chip" data-key="wifi">Wi-Fi Help</div>
+                <div class="suggestion-chip" data-key="pool">Pool Hours</div>
+                <div class="suggestion-chip" data-key="services">Services</div>
             </div>
         </div>
         
         <div class="action-area">
-            <button id="permissionButton" class="btn">Activate Voice Assistant</button>
-            <button id="refreshButton" class="btn btn-secondary" style="display: none;">Restart Microphone</button>
+            <button id="stopButton" class="btn btn-stop">Stop Audio</button>
+            <button id="helpButton" class="btn">Quick Help</button>
         </div>
     </div>
 
@@ -304,7 +302,12 @@
             'services': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/services.mp3',
             'checkin': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/checkin.mp3',
             'housekeeping': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/housekeeping.mp3',
-            'parking': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/parking.mp3'
+            'parking': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/parking.mp3',
+            'help': [
+                'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/welcome.mp3',
+                'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/amenities.mp3',
+                'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/services.mp3'
+            ]
         };
 
         // Command mapping
@@ -325,7 +328,8 @@
             'pool': 'pool',
             'swim': 'pool',
             'services': 'services',
-            'help': 'services',
+            'help': 'help',
+            'assistance': 'help',
             'checkin': 'checkin',
             'arrival': 'checkin',
             'housekeeping': 'housekeeping',
@@ -333,7 +337,8 @@
             'parking': 'parking',
             'park': 'parking',
             'stop': 'stop',
-            'quiet': 'stop'
+            'quiet': 'stop',
+            'shut up': 'stop'
         };
 
         // Global variables
@@ -343,12 +348,12 @@
 
         // DOM elements
         const micStatusText = document.getElementById('micStatusText');
-        const permissionButton = document.getElementById('permissionButton');
-        const refreshButton = document.getElementById('refreshButton');
         const messageArea = document.getElementById('messageArea');
+        const stopButton = document.getElementById('stopButton');
+        const helpButton = document.getElementById('helpButton');
         const suggestionChips = document.querySelectorAll('.suggestion-chip');
 
-        // Initialize
+        // Initialize with microphone always on
         document.addEventListener('DOMContentLoaded', function() {
             // Setup button click handlers
             suggestionChips.forEach(chip => {
@@ -358,70 +363,36 @@
                 });
             });
 
-            permissionButton.addEventListener('click', requestMicrophonePermission);
-            refreshButton.addEventListener('click', resetMicrophone);
+            stopButton.addEventListener('click', stopAudio);
+            helpButton.addEventListener('click', () => playAudio('help'));
+            
+            // Start microphone immediately
+            startMicrophone();
         });
 
-        function resetMicrophone() {
-            if (recognition) {
-                try {
-                    recognition.stop();
-                } catch(e) {
-                    console.log('Error stopping recognition:', e);
-                }
-                recognition = null;
-            }
-            if (window.localStream) {
-                window.localStream.getTracks().forEach(track => track.stop());
-                window.localStream = null;
-            }
-            permissionButton.style.display = 'block';
-            refreshButton.style.display = 'none';
-            micStatusText.innerHTML = '<div class="status-dot"></div><span>Offline</span>';
-            addMessage('Microphone reset. Tap "Activate Voice Assistant" to start again.', 'assistant');
-        }
-
-        function requestMicrophonePermission() {
+        function startMicrophone() {
             if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
                 addMessage('Voice commands not supported on this browser', 'assistant');
                 micStatusText.innerHTML = '<div class="status-dot" style="background:var(--error)"></div><span>Not Supported</span>';
-                permissionButton.style.display = 'none';
                 return;
             }
 
-            // On mobile devices, we need to trigger this from a user gesture
             navigator.mediaDevices.getUserMedia({ audio: true })
                 .then(function(stream) {
-                    // Permission granted
-                    permissionButton.style.display = 'none';
-                    refreshButton.style.display = 'block';
-                    micStatusText.innerHTML = '<div class="status-dot" style="background:var(--accent)"></div><span>Listening</span>';
-                    micStatusText.classList.add('status-active');
-                    addMessage('I\'m listening now. How may I help you?', 'assistant');
-                    
-                    // Keep a reference to the stream
                     window.localStream = stream;
-                    
-                    // Initialize voice recognition
                     initVoiceRecognition();
                 })
                 .catch(function(err) {
                     console.error("Microphone access error:", err);
-                    
-                    let errorMessage = 'Microphone access denied';
+                    let errorMessage = 'Could not access microphone';
                     if (err.name === 'NotAllowedError') {
-                        errorMessage = 'Microphone access blocked. Please allow in browser settings.';
-                        if (isMobile) {
-                            errorMessage += ' (Check device settings > Apps > Chrome > Permissions)';
-                        }
-                    } else if (err.name === 'NotFoundError') {
-                        errorMessage = 'No microphone found';
-                    } else if (err.name === 'NotReadableError') {
-                        errorMessage = 'Microphone is already in use';
+                        errorMessage = 'Please allow microphone access in your browser settings';
                     }
-                    
                     addMessage(errorMessage, 'assistant');
                     micStatusText.innerHTML = '<div class="status-dot" style="background:var(--error)"></div><span>Error</span>';
+                    
+                    // Try again after 3 seconds
+                    setTimeout(startMicrophone, 3000);
                 });
         }
 
@@ -470,7 +441,7 @@
                     } else if (matchedKey) {
                         playAudio(matchedKey);
                     } else {
-                        addMessage('I didn\'t understand that. Try saying "Help" for options.', 'assistant');
+                        addMessage('Try saying "help" for options', 'assistant');
                     }
                 };
 
@@ -478,22 +449,27 @@
                     console.error('Speech recognition error:', event.error);
                     micStatusText.innerHTML = '<div class="status-dot" style="background:var(--error)"></div><span>Error</span>';
                     
+                    // Automatically restart on error
                     setTimeout(() => {
                         if (recognition) recognition.start();
-                    }, 2000);
+                    }, 1000);
                 };
 
                 recognition.onend = function() {
+                    // Automatically restart when ended
                     if (recognition) recognition.start();
                 };
 
+                // Start listening
                 recognition.start();
 
             } catch(e) {
                 console.error('Speech recognition failed:', e);
                 addMessage('Voice commands not supported', 'assistant');
                 micStatusText.innerHTML = '<div class="status-dot" style="background:var(--error)"></div><span>Not Supported</span>';
-                permissionButton.style.display = 'none';
+                
+                // Try again after 5 seconds
+                setTimeout(initVoiceRecognition, 5000);
             }
         }
 
@@ -520,8 +496,15 @@
 
         function stopAudio() {
             if (currentAudio) {
-                currentAudio.pause();
-                currentAudio.currentTime = 0;
+                if (Array.isArray(currentAudio)) {
+                    currentAudio.forEach(audio => {
+                        audio.pause();
+                        audio.currentTime = 0;
+                    });
+                } else {
+                    currentAudio.pause();
+                    currentAudio.currentTime = 0;
+                }
                 currentAudio = null;
                 addMessage('Audio stopped', 'assistant');
             }
@@ -538,33 +521,64 @@
             
             const typing = showTyping();
             
-            currentAudio = new Audio(audioFile);
-            currentAudio.play()
-                .then(() => {
-                    messageArea.removeChild(typing);
-                    addMessage(getAudioDescription(key), 'assistant');
-                })
-                .catch(error => {
-                    messageArea.removeChild(typing);
-                    addMessage('Error playing audio', 'assistant');
-                    console.error('Audio playback error:', error);
-                });
+            if (Array.isArray(audioFile)) {
+                currentAudio = [];
+                let index = 0;
+                
+                function playNext() {
+                    if (index >= audioFile.length) {
+                        messageArea.removeChild(typing);
+                        return;
+                    }
+                    
+                    const audio = new Audio(audioFile[index]);
+                    currentAudio.push(audio);
+                    
+                    audio.play()
+                        .then(() => {
+                            audio.onended = () => {
+                                index++;
+                                playNext();
+                            };
+                        })
+                        .catch(error => {
+                            console.error('Audio playback error:', error);
+                            index++;
+                            playNext();
+                        });
+                }
+                
+                playNext();
+            } else {
+                currentAudio = new Audio(audioFile);
+                currentAudio.play()
+                    .then(() => {
+                        messageArea.removeChild(typing);
+                        addMessage(getAudioDescription(key), 'assistant');
+                    })
+                    .catch(error => {
+                        messageArea.removeChild(typing);
+                        addMessage('Error playing audio', 'assistant');
+                        console.error('Audio playback error:', error);
+                    });
+            }
         }
 
         function getAudioDescription(key) {
             const descriptions = {
                 'welcome': 'Welcome to Best Western Hopkinsville! I\'m SHREE, your virtual assistant.',
-                'breakfast': 'Our complimentary breakfast is served daily from 6:30 to 9:30 AM in the lobby.',
-                'elevator': 'Elevators are located in the center of each hallway and near side entrances.',
-                'amenities': 'We offer an outdoor pool, fitness center, and complimentary WiFi.',
-                'wifi': 'Connect to "BW_Guest" with the password provided at check-in.',
-                'pool': 'The heated pool is open from 9:30 AM to 9 PM daily. No lifeguard on duty.',
-                'services': 'Front desk services include concierge, luggage storage, and local recommendations.',
-                'checkin': 'Check-in time is 3 PM. Early check-in is subject to availability.',
-                'housekeeping': 'Daily service from 9 AM to 3 PM. Dial 0 for immediate requests.',
-                'parking': 'Complimentary parking is available for guests in our main lot.'
+                'breakfast': 'Our complimentary breakfast is served daily from 6:30 to 9:30 AM in the main lobby area.',
+                'elevator': 'Elevators are located in the middle of hallways and near side entrances for your convenience.',
+                'amenities': 'Your stay includes access to our outdoor pool, fitness center, and free WiFi.',
+                'wifi': 'Connect to our high-speed WiFi with the password provided at check-in.',
+                'pool': 'The heated outdoor pool is open from 9:30 AM to 9:00 PM daily. No lifeguard on duty.',
+                'services': 'Our front desk provides information on local restaurants and activities. Need towels? Dial 0.',
+                'checkin': 'Check-in time is 3 PM. Early arrivals are welcome if rooms are available.',
+                'housekeeping': 'Daily service runs from 9 AM to 3 PM. For immediate needs, hang the "Service Please" tag.',
+                'parking': 'Complimentary parking is available for guests. Oversized vehicles should park in designated areas.',
+                'help': 'I can help with: breakfast hours, amenities, WiFi, pool information, services, and more!'
             };
-            return descriptions[key] || 'Information about ' + key;
+            return descriptions[key] || 'Here\'s information about that';
         }
     </script>
 </body>
