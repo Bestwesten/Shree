@@ -242,6 +242,9 @@
                     <span id="micStatusText">Microphone access required</span>
                 </div>
                 <button id="permissionButton" class="permission-button">Enable Microphone</button>
+                <button id="refreshButton" class="permission-button secondary" style="margin-top: 10px; display: none;">
+                    Refresh Microphone Access
+                </button>
                 <div class="voice-commands">
                     Try saying: "Welcome", "Breakfast", "Elevator", or "Stop"
                 </div>
@@ -340,10 +343,12 @@
         let currentAudio = null;
         let recognition = null;
         let isLocalFile = window.location.protocol === 'file:';
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
         // DOM elements
         const micStatusText = document.getElementById('micStatusText');
         const permissionButton = document.getElementById('permissionButton');
+        const refreshButton = document.getElementById('refreshButton');
         const statusElement = document.getElementById('status');
         const stopButton = document.getElementById('stopButton');
         const playAllButton = document.getElementById('playAllButton');
@@ -354,6 +359,11 @@
             // Check if running as local file
             if (isLocalFile) {
                 micStatusText.innerHTML = '<span style="color:#e74c3c">Note: For Android, use Firefox or a web server</span>';
+            }
+
+            // Add mobile-specific instructions
+            if (isMobile) {
+                micStatusText.innerHTML += '<br><span style="color:#3498db">On mobile devices, ensure Chrome has microphone permissions in system settings.</span>';
             }
 
             // Setup button click handlers
@@ -372,6 +382,18 @@
 
             // Request microphone permission
             permissionButton.addEventListener('click', requestMicrophonePermission);
+            
+            // Refresh microphone access
+            refreshButton.addEventListener('click', function() {
+                if (recognition) {
+                    recognition.stop();
+                }
+                if (window.localStream) {
+                    window.localStream.getTracks().forEach(track => track.stop());
+                    window.localStream = null;
+                }
+                setTimeout(requestMicrophonePermission, 500);
+            });
         });
 
         function requestMicrophonePermission() {
@@ -380,11 +402,12 @@
                     .then(function(stream) {
                         // Permission granted
                         permissionButton.style.display = 'none';
+                        refreshButton.style.display = 'block';
                         micStatusText.textContent = 'Always listening for commands';
                         setStatus('Microphone ready - listening for commands', 'active');
                         
-                        // Stop all tracks to release the microphone
-                        stream.getTracks().forEach(track => track.stop());
+                        // Keep a reference to the stream
+                        window.localStream = stream;
                         
                         // Initialize voice recognition
                         initVoiceRecognition();
@@ -393,6 +416,13 @@
                         console.error("Microphone access denied", err);
                         micStatusText.innerHTML = '<span style="color:#e74c3c">Microphone access denied. Please enable permissions.</span>';
                         setStatus('Microphone access denied', 'error');
+                        
+                        // Specific error handling
+                        if (err.name === 'NotAllowedError') {
+                            setStatus('Microphone access blocked. Please check browser permissions.', 'error');
+                        } else if (err.name === 'NotFoundError') {
+                            setStatus('No microphone found. Please check your device.', 'error');
+                        }
                         
                         if (isLocalFile) {
                             micStatusText.innerHTML += '<br><span style="color:#e67e22">For local files on Android, use Firefox or a web server</span>';
@@ -412,6 +442,7 @@
                 recognition.continuous = true;
                 recognition.interimResults = false;
                 recognition.maxAlternatives = 1;
+                recognition.timeout = 10000; // 10 seconds timeout
 
                 recognition.onstart = function() {
                     setStatus('Listening for commands...', 'active');
@@ -441,17 +472,25 @@
 
                 recognition.onerror = function(event) {
                     console.error('Speech recognition error', event.error);
+                    setStatus(`Error: ${event.error}`, 'error');
+                    
+                    // Specific handling for common errors
                     if (event.error === 'not-allowed') {
-                        setStatus('Microphone access denied', 'error');
-                        micStatusText.innerHTML = '<span style="color:#e74c3c">Microphone access denied. Please refresh and allow access.</span>';
-                    } else {
-                        setStatus(`Error: ${event.error}`, 'error');
+                        setStatus('Microphone access denied. Please refresh and allow access.', 'error');
+                    } else if (event.error === 'no-speech') {
+                        setStatus('No speech detected. Try again.', 'error');
                     }
                     
                     // Try to restart recognition after error
                     setTimeout(() => {
-                        if (recognition) recognition.start();
-                    }, 1000);
+                        if (recognition) {
+                            try {
+                                recognition.start();
+                            } catch(e) {
+                                console.error('Failed to restart recognition:', e);
+                            }
+                        }
+                    }, 2000);
                 };
 
                 recognition.onend = function() {
@@ -492,6 +531,12 @@
                 }
                 currentAudio = null;
                 setStatus('Audio stopped');
+            }
+            
+            // Stop the microphone stream if it exists
+            if (window.localStream) {
+                window.localStream.getTracks().forEach(track => track.stop());
+                window.localStream = null;
             }
         }
 
