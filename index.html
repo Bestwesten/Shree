@@ -281,6 +281,7 @@
                 <div class="suggestion-chip" data-key="wifi">Wi-Fi Help</div>
                 <div class="suggestion-chip" data-key="pool">Pool Hours</div>
                 <div class="suggestion-chip" data-key="services">Services</div>
+                <div class="suggestion-chip" data-key="gym">Gym/Fitness</div>
             </div>
         </div>
         
@@ -297,12 +298,13 @@
             'breakfast': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/breakfast.mp3',
             'elevator': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/elevator.mp3',
             'amenities': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/amenities.mp3',
-            'wifi': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/wifi.mp3',
+            'wifi': 'https://github.com/Bestwesten/Shree/raw/63719b6e6bfe108baa75491fd032640d06d4b927/audio/wifi.mp3',
             'pool': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/pool.mp3',
             'services': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/services.mp3',
             'checkin': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/checkin.mp3',
             'housekeeping': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/housekeeping.mp3',
             'parking': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/parking.mp3',
+            'gym': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/gym.mp3',
             'help': [
                 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/welcome.mp3',
                 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/amenities.mp3',
@@ -310,35 +312,150 @@
             ]
         };
 
-        // Command mapping
+        // Enhanced command mapping with similar sounding words and common names
         const commandMap = {
+            // Welcome commands
             'welcome': 'welcome',
             'hello': 'welcome',
             'hi': 'welcome',
             'greeting': 'welcome',
+            'hey': 'welcome',
+            'hola': 'welcome',
+            'hiya': 'welcome',
+            'greetings': 'welcome',
+            
+            // Breakfast commands
             'breakfast': 'breakfast',
             'food': 'breakfast',
             'eat': 'breakfast',
+            'meal': 'breakfast',
+            'dining': 'breakfast',
+            'hungry': 'breakfast',
+            'morning food': 'breakfast',
+            'break fast': 'breakfast',
+            'brunch': 'breakfast',
+            
+            // Elevator commands
             'elevator': 'elevator',
             'lift': 'elevator',
+            'elevate': 'elevator',
+            'upstairs': 'elevator',
+            'downstairs': 'elevator',
+            'stairs': 'elevator',
+            'escalator': 'elevator',
+            
+            // Amenities commands
             'amenities': 'amenities',
             'features': 'amenities',
+            'facilities': 'amenities',
+            'services': 'amenities',
+            'offerings': 'amenities',
+            'what do you have': 'amenities',
+            'what\'s available': 'amenities',
+            'what\'s included': 'amenities',
+            
+            // WiFi commands
             'wifi': 'wifi',
+            'wi fi': 'wifi',
+            'wi-fi': 'wifi',
             'internet': 'wifi',
+            'network': 'wifi',
+            'connection': 'wifi',
+            'wireless': 'wifi',
+            'web': 'wifi',
+            'online': 'wifi',
+            'password': 'wifi',
+            'wi': 'wifi',
+            'why fi': 'wifi',
+            'wife': 'wifi', // Common mispronunciation
+            'wi five': 'wifi',
+            
+            // Pool commands
             'pool': 'pool',
             'swim': 'pool',
+            'swimming': 'pool',
+            'water': 'pool',
+            'hot tub': 'pool',
+            'jacuzzi': 'pool',
+            'dip': 'pool',
+            'cool off': 'pool',
+            'chill': 'pool',
+            
+            // Services commands
             'services': 'services',
-            'help': 'help',
-            'assistance': 'help',
+            'help': 'services',
+            'assistance': 'services',
+            'support': 'services',
+            'front desk': 'services',
+            'reception': 'services',
+            'concierge': 'services',
+            'service': 'services',
+            'serves': 'services', // Common mispronunciation
+            
+            // Check-in commands
             'checkin': 'checkin',
+            'check in': 'checkin',
+            'check-in': 'checkin',
             'arrival': 'checkin',
+            'arrive': 'checkin',
+            'register': 'checkin',
+            'registration': 'checkin',
+            'check': 'checkin',
+            'checking': 'checkin',
+            
+            // Housekeeping commands
             'housekeeping': 'housekeeping',
             'clean': 'housekeeping',
+            'cleaning': 'housekeeping',
+            'maid': 'housekeeping',
+            'service': 'housekeeping',
+            'towels': 'housekeeping',
+            'sheets': 'housekeeping',
+            'make up room': 'housekeeping',
+            'room service': 'housekeeping',
+            
+            // Parking commands
             'parking': 'parking',
             'park': 'parking',
+            'car': 'parking',
+            'vehicle': 'parking',
+            'where to park': 'parking',
+            'auto': 'parking',
+            'garage': 'parking',
+            'lot': 'parking',
+            'valet': 'parking',
+            
+            // Gym commands
+            'gym': 'gym',
+            'exercise': 'gym',
+            'fitness': 'gym',
+            'workout': 'gym',
+            'train': 'gym',
+            'weights': 'gym',
+            'jim': 'gym', // Common mispronunciation
+            'gem': 'gym', // Common mispronunciation
+            'gin': 'gym', // Common mispronunciation
+            'jym': 'gym', // Common misspelling
+            'gymnasium': 'gym',
+            'fitness center': 'gym',
+            'exercise room': 'gym',
+            'work out': 'gym',
+            'treadmill': 'gym',
+            
+            // Stop commands
             'stop': 'stop',
             'quiet': 'stop',
-            'shut up': 'stop'
+            'shut up': 'stop',
+            'silence': 'stop',
+            'enough': 'stop',
+            'halt': 'stop',
+            'cease': 'stop',
+            'mute': 'stop',
+            'pause': 'stop',
+            'end': 'stop',
+            'cancel': 'stop',
+            'no more': 'stop',
+            'that\'s enough': 'stop'
         };
 
         // Global variables
@@ -438,6 +555,7 @@
                     
                     if (matchedKey === 'stop') {
                         stopAudio();
+                        addMessage('Audio stopped', 'assistant');
                     } else if (matchedKey) {
                         playAudio(matchedKey);
                     } else {
@@ -506,7 +624,6 @@
                     currentAudio.currentTime = 0;
                 }
                 currentAudio = null;
-                addMessage('Audio stopped', 'assistant');
             }
         }
 
@@ -576,6 +693,7 @@
                 'checkin': 'Check-in time is 3 PM. Early arrivals are welcome if rooms are available.',
                 'housekeeping': 'Daily service runs from 9 AM to 3 PM. For immediate needs, hang the "Service Please" tag.',
                 'parking': 'Complimentary parking is available for guests. Oversized vehicles should park in designated areas.',
+                'gym': 'Our 24-hour fitness center is located on the first floor near the elevators. Equipment includes treadmills and free weights.',
                 'help': 'I can help with: breakfast hours, amenities, WiFi, pool information, services, and more!'
             };
             return descriptions[key] || 'Here\'s information about that';
