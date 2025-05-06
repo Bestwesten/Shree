@@ -328,6 +328,8 @@
                 <div class="suggestion-chip" data-key="emergency">Emergency</div>
                 <div class="suggestion-chip" data-key="policies">Policies</div>
                 <div class="suggestion-chip" data-key="manager">Manager</div>
+                <div class="suggestion-chip" data-key="review">Review</div>
+                <div class="suggestion-chip" data-key="joke">Tell a Joke</div>
             </div>
         </div>
         
@@ -365,8 +367,8 @@
             'gym': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/gym.mp3',
             'emergency': 'https://github.com/Bestwesten/Shree/raw/f5948c7a3cf649ebca2c67de33687a6979b0c3e0/audio/emergency.mp3',
             'policies': 'https://github.com/Bestwesten/Shree/raw/f5948c7a3cf649ebca2c67de33687a6979b0c3e0/audio/policies.mp3',
-            'manager': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/manager.mp3',
-            'review': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/review.mp3',
+            'manager': 'https://github.com/Bestwesten/Shree/raw/0c5746f6d33fd0a0270f4fcef5f5917188407375/audio/Manager_Contact.mp3',
+            'review': 'https://github.com/Bestwesten/Shree/raw/0c5746f6d33fd0a0270f4fcef5f5917188407375/audio/Review.mp3',
             'help': [
                 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/welcome.mp3',
                 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/amenities.mp3',
@@ -536,6 +538,11 @@
             'contact manager': 'manager',
             'head': 'manager',
             'director': 'manager',
+            'admin': 'manager',
+            'administrator': 'manager',
+            'hotel manager': 'manager',
+            'general manager': 'manager',
+            'shift manager': 'manager',
             
             // Review commands
             'review': 'review',
@@ -547,6 +554,23 @@
             'rate': 'review',
             'how was it': 'review',
             'opinion': 'review',
+            'experience': 'review',
+            'thoughts': 'review',
+            'suggestions': 'review',
+            'comments': 'review',
+            'compliment': 'review',
+            'complaints': 'review',
+            
+            // Joke commands
+            'joke': 'joke',
+            'tell me a joke': 'joke',
+            'make me laugh': 'joke',
+            'funny': 'joke',
+            'humor': 'joke',
+            'knock knock': 'joke',
+            'something funny': 'joke',
+            'entertain me': 'joke',
+            'cheer me up': 'joke',
             
             // Send message commands
             'send message': 'send_message',
@@ -601,7 +625,11 @@
             suggestionChips.forEach(chip => {
                 chip.addEventListener('click', function() {
                     const key = this.getAttribute('data-key');
-                    playAudio(key);
+                    if (key === 'joke') {
+                        tellJoke();
+                    } else {
+                        playAudio(key);
+                    }
                 });
             });
 
@@ -695,6 +723,8 @@
                         addMessage('Audio muted. Say "unmute" to resume listening.', 'assistant');
                     } else if (matchedKey === 'send_message') {
                         promptForMessage();
+                    } else if (matchedKey === 'joke') {
+                        tellJoke();
                     } else if (matchedKey) {
                         playAudio(matchedKey);
                     } else {
@@ -883,6 +913,39 @@
             
             messageModal.style.display = 'none';
             messageText.value = '';
+        }
+
+        async function tellJoke() {
+            if (isMuted) return;
+            
+            const typing = showTyping();
+            
+            try {
+                // Fetch a random joke from a public API (PG-rated)
+                const response = await fetch('https://v2.jokeapi.dev/joke/Any?blacklistFlags=nsfw,religious,political,racist,sexist,explicit&type=single');
+                const data = await response.json();
+                
+                messageArea.removeChild(typing);
+                
+                if (data.joke) {
+                    addMessage('Here\'s a joke for you:', 'assistant');
+                    
+                    // Use the SpeechSynthesis API to read the joke aloud
+                    if ('speechSynthesis' in window) {
+                        const utterance = new SpeechSynthesisUtterance(data.joke);
+                        utterance.rate = 0.9;
+                        speechSynthesis.speak(utterance);
+                    }
+                    
+                    addMessage(data.joke, 'assistant');
+                } else {
+                    addMessage('I couldn\'t think of a good joke right now. Maybe try again later!', 'assistant');
+                }
+            } catch (error) {
+                console.error('Error fetching joke:', error);
+                messageArea.removeChild(typing);
+                addMessage('I tried to tell a joke but something went wrong. Maybe ask me again later!', 'assistant');
+            }
         }
     </script>
 </body>
