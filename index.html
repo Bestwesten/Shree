@@ -453,7 +453,7 @@
             'policies': 'https://github.com/Bestwesten/Shree/raw/f5948c7a3cf649ebca2c67de33687a6979b0c3e0/audio/policies.mp3',
             'manager': 'https://github.com/Bestwesten/Shree/raw/0c5746f6d33fd0a0270f4fcef5f5917188407375/audio/Manager_Contact.mp3',
             'review': 'https://github.com/Bestwesten/Shree/raw/0c5746f6d33fd0a0270f4fcef5f5917188407375/audio/Review.mp3',
-            'name': 'https://github.com/Bestwesten/Shree/raw/673b436793db4539572890fa7305e5acbde5f083/audio/Name.mp3',
+            'name': 'https://github.com/Bestwesten/RITU/raw/main/audio/Name.mp3', // Added name audio
             'help': [
                 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/welcome.mp3',
                 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/amenities.mp3',
@@ -463,7 +463,7 @@
 
         // Enhanced command mapping with similar sounding words and common names
         const commandMap = {
-            // Welcome/name commands
+            // Welcome commands
             'welcome': 'welcome',
             'hello': 'welcome',
             'hi': 'welcome',
@@ -472,26 +472,345 @@
             'hola': 'welcome',
             'hiya': 'welcome',
             'greetings': 'welcome',
-            'your name': 'name',
-            'who are you': 'name',
-            'introduce yourself': 'name',
-            'identify yourself': 'name',
-            'who am i talking to': 'name',
-            'what do i call you': 'name',
-            'what should i call you': 'name',
+            'your name': 'name', // Changed to use name audio
+            'who are you': 'name', // Changed to use name audio
+            'introduce yourself': 'name', // Changed to use name audio
+            'ritu': 'name', // Added name recognition
+            'are you ritu': 'name', // Added name recognition
+            'is your name ritu': 'name', // Added name recognition
             
-            // [Rest of your command mappings remain the same...]
+            // Breakfast commands
+            'breakfast': 'breakfast',
+            'food': 'breakfast',
+            'eat': 'breakfast',
+            'meal': 'breakfast',
+            'dining': 'breakfast',
+            'hungry': 'breakfast',
+            'morning food': 'breakfast',
+            'break fast': 'breakfast',
+            'brunch': 'breakfast',
+            
+            // Elevator commands
+            'elevator': 'elevator',
+            'lift': 'elevator',
+            'elevate': 'elevator',
+            'upstairs': 'elevator',
+            'downstairs': 'elevator',
+            'stairs': 'elevator',
+            'escalator': 'elevator',
+            
+            // Amenities commands
+            'amenities': 'amenities',
+            'features': 'amenities',
+            'facilities': 'amenities',
+            'services': 'amenities',
+            'offerings': 'amenities',
+            'what do you have': 'amenities',
+            'what\'s available': 'amenities',
+            'what\'s included': 'amenities',
+            
+            // WiFi commands
+            'wifi': 'wifi',
+            'wi fi': 'wifi',
+            'wi-fi': 'wifi',
+            'internet': 'wifi',
+            'network': 'wifi',
+            'connection': 'wifi',
+            'wireless': 'wifi',
+            'web': 'wifi',
+            'online': 'wifi',
+            'password': 'wifi',
+            'wi': 'wifi',
+            'why fi': 'wifi',
+            'wife': 'wifi',
+            'wi five': 'wifi',
+            
+            // Pool commands
+            'pool': 'pool',
+            'swim': 'pool',
+            'swimming': 'pool',
+            'water': 'pool',
+            'hot tub': 'pool',
+            'jacuzzi': 'pool',
+            'dip': 'pool',
+            'cool off': 'pool',
+            'chill': 'pool',
+            
+            // Services commands
+            'services': 'services',
+            'help': 'services',
+            'assistance': 'services',
+            'support': 'services',
+            'front desk': 'services',
+            'reception': 'services',
+            'concierge': 'services',
+            'service': 'services',
+            'serves': 'services',
+            
+            // Check-in commands
+            'checkin': 'checkin',
+            'check in': 'checkin',
+            'check-in': 'checkin',
+            'arrival': 'checkin',
+            'arrive': 'checkin',
+            'register': 'checkin',
+            'registration': 'checkin',
+            'check': 'checkin',
+            'checking': 'checkin',
+            
+            // Housekeeping commands
+            'housekeeping': 'housekeeping',
+            'clean': 'housekeeping',
+            'cleaning': 'housekeeping',
+            'maid': 'housekeeping',
+            'service': 'housekeeping',
+            'towels': 'housekeeping',
+            'sheets': 'housekeeping',
+            'make up room': 'housekeeping',
+            'room service': 'housekeeping',
+            
+            // Parking commands
+            'parking': 'parking',
+            'park': 'parking',
+            'car': 'parking',
+            'vehicle': 'parking',
+            'where to park': 'parking',
+            'auto': 'parking',
+            'garage': 'parking',
+            'lot': 'parking',
+            'valet': 'parking',
+            
+            // Gym commands
+            'gym': 'gym',
+            'exercise': 'gym',
+            'fitness': 'gym',
+            'workout': 'gym',
+            'train': 'gym',
+            'weights': 'gym',
+            'jim': 'gym',
+            'gem': 'gym',
+            'gin': 'gym',
+            'jym': 'gym',
+            'gymnasium': 'gym',
+            'fitness center': 'gym',
+            'exercise room': 'gym',
+            'work out': 'gym',
+            'treadmill': 'gym',
+            
+            // Emergency commands
+            'emergency': 'emergency',
+            'emergencies': 'emergency',
+            'help me': 'emergency',
+            'urgent': 'emergency',
+            'danger': 'emergency',
+            '911': 'emergency',
+            'police': 'emergency',
+            'fire': 'emergency',
+            'medical': 'emergency',
+            'accident': 'emergency',
+            
+            // Policies commands
+            'policies': 'policies',
+            'policy': 'policies',
+            'rules': 'policies',
+            'regulations': 'policies',
+            'procedures': 'policies',
+            'guidelines': 'policies',
+            'hotel rules': 'policies',
+            'house rules': 'policies',
+            
+            // Manager commands
+            'manager': 'manager',
+            'manager on duty': 'manager',
+            'supervisor': 'manager',
+            'boss': 'manager',
+            'management': 'manager',
+            'speak to manager': 'manager',
+            'contact manager': 'manager',
+            'head': 'manager',
+            'director': 'manager',
+            'admin': 'manager',
+            'administrator': 'manager',
+            'hotel manager': 'manager',
+            'general manager': 'manager',
+            'shift manager': 'manager',
+            
+            // Review commands
+            'review': 'review',
+            'feedback': 'review',
+            'rating': 'review',
+            'comment': 'review',
+            'survey': 'review',
+            'evaluation': 'review',
+            'rate': 'review',
+            'how was it': 'review',
+            'opinion': 'review',
+            'experience': 'review',
+            'thoughts': 'review',
+            'suggestions': 'review',
+            'comments': 'review',
+            'compliment': 'review',
+            'complaints': 'review',
+            
+            // Weather commands
+            'weather': 'weather',
+            'forecast': 'weather',
+            'temperature': 'weather',
+            'how hot': 'weather',
+            'how cold': 'weather',
+            'weather today': 'weather',
+            'weather report': 'weather',
+            'outside': 'weather',
+            'climate': 'weather',
+            'humidity': 'weather',
+            'rain': 'weather',
+            'sunny': 'weather',
+            'cloudy': 'weather',
+            
+            // Date commands
+            'date': 'date',
+            'today': 'date',
+            'what day': 'date',
+            'current date': 'date',
+            'day today': 'date',
+            'what\'s today': 'date',
+            'today\'s date': 'date',
+            'calendar': 'date',
+            
+            // Joke commands
+            'joke': 'joke',
+            'tell me a joke': 'joke',
+            'make me laugh': 'joke',
+            'funny': 'joke',
+            'humor': 'joke',
+            'knock knock': 'joke',
+            'something funny': 'joke',
+            'entertain me': 'joke',
+            'cheer me up': 'joke',
+            
+            // Send message commands
+            'send message': 'send_message',
+            'text manager': 'send_message',
+            'contact management': 'send_message',
+            'message management': 'send_message',
+            'send text': 'send_message',
+            'send msg': 'send_message',
+            'text management': 'send_message',
+            'notify manager': 'send_message',
+            
+            // Stop commands
+            'stop': 'stop',
+            'quiet': 'stop',
+            'shut up': 'stop',
+            'silence': 'stop',
+            'enough': 'stop',
+            'halt': 'stop',
+            'cease': 'stop',
+            'mute': 'stop',
+            'pause': 'stop',
+            'end': 'stop',
+            'cancel': 'stop',
+            'no more': 'stop',
+            'that\'s enough': 'stop',
+            'stop talking': 'stop',
+            'be quiet': 'stop',
+            'quiet down': 'stop',
+            
+            // Yes/No responses
+            'yes': 'yes',
+            'yeah': 'yes',
+            'yep': 'yes',
+            'sure': 'yes',
+            'okay': 'yes',
+            'ok': 'yes',
+            'no': 'no',
+            'nope': 'no',
+            'nah': 'no',
+            'not now': 'no'
         };
 
         // Global variables
         let currentAudio = null;
         let recognition = null;
         let isMuted = false;
-        let awaitingWeatherResponse = false;
+        let awaitingWeatherFollowUp = false;
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         const managementPhoneNumber = '5134036508';
 
-        // [Previous initialization code remains the same...]
+        // DOM elements
+        const micStatusText = document.getElementById('micStatusText');
+        const messageArea = document.getElementById('messageArea');
+        const stopButton = document.getElementById('stopButton');
+        const helpButton = document.getElementById('helpButton');
+        const suggestionChips = document.querySelectorAll('.suggestion-chip');
+        const messageModal = document.getElementById('messageModal');
+        const messageText = document.getElementById('messageText');
+        const cancelMessage = document.getElementById('cancelMessage');
+        const sendMessage = document.getElementById('sendMessage');
+
+        // Initialize with microphone always on
+        document.addEventListener('DOMContentLoaded', function() {
+            // Setup button click handlers
+            suggestionChips.forEach(chip => {
+                chip.addEventListener('click', function() {
+                    const key = this.getAttribute('data-key');
+                    if (key === 'joke') {
+                        tellJoke();
+                    } else if (key === 'weather') {
+                        getWeather();
+                    } else if (key === 'date') {
+                        showCurrentDate();
+                    } else {
+                        playAudio(key);
+                    }
+                });
+            });
+
+            stopButton.addEventListener('click', toggleMute);
+            helpButton.addEventListener('click', () => playAudio('help'));
+            
+            // Message modal handlers
+            cancelMessage.addEventListener('click', () => {
+                messageModal.style.display = 'none';
+                messageText.value = '';
+            });
+            
+            sendMessage.addEventListener('click', sendMessageToManagement);
+            
+            // Start microphone immediately
+            startMicrophone();
+            
+            // Initial greeting
+            setTimeout(() => {
+                speak("Hello! I'm RITU, your virtual assistant at Best Western Hopkinsville. How may I assist you today?");
+            }, 1000);
+        });
+
+        function startMicrophone() {
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                addMessage('Voice commands not supported on this browser', 'assistant');
+                micStatusText.innerHTML = '<div class="status-dot" style="background:var(--error)"></div><span>Not Supported</span>';
+                return;
+            }
+
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(function(stream) {
+                    window.localStream = stream;
+                    initVoiceRecognition();
+                })
+                .catch(function(err) {
+                    console.error("Microphone access error:", err);
+                    let errorMessage = 'Could not access microphone';
+                    if (err.name === 'NotAllowedError') {
+                        errorMessage = 'Please allow microphone access in your browser settings';
+                    }
+                    addMessage(errorMessage, 'assistant');
+                    micStatusText.innerHTML = '<div class="status-dot" style="background:var(--error)"></div><span>Error</span>';
+                    
+                    // Try again after 3 seconds
+                    setTimeout(startMicrophone, 3000);
+                });
+        }
 
         function initVoiceRecognition() {
             try {
@@ -524,18 +843,6 @@
                     const transcript = result[0].transcript.toLowerCase().trim();
                     addMessage(transcript, 'user');
                     
-                    // Handle weather follow-up response
-                    if (awaitingWeatherResponse) {
-                        if (transcript.includes('yes') || transcript.includes('yeah') || transcript.includes('sure')) {
-                            showExtendedWeatherForecast();
-                        } else {
-                            addMessage('Okay, let me know if you need anything else!', 'assistant');
-                            speak('Okay, let me know if you need anything else!');
-                        }
-                        awaitingWeatherResponse = false;
-                        return;
-                    }
-                    
                     let matchedKey = null;
                     let highestConfidence = 0;
                     
@@ -560,8 +867,8 @@
                         getWeather();
                     } else if (matchedKey === 'date') {
                         showCurrentDate();
-                    } else if (matchedKey === 'name') {
-                        playNameResponse();
+                    } else if (awaitingWeatherFollowUp) {
+                        handleWeatherFollowUp(matchedKey);
                     } else if (matchedKey) {
                         playAudio(matchedKey);
                     } else {
@@ -569,55 +876,269 @@
                     }
                 };
 
-                // [Rest of the recognition code remains the same...]
+                recognition.onerror = function(event) {
+                    console.error('Speech recognition error:', event.error);
+                    if (!isMuted) {
+                        micStatusText.innerHTML = '<div class="status-dot" style="background:var(--error)"></div><span>Error</span>';
+                    }
+                    
+                    // Automatically restart on error
+                    setTimeout(() => {
+                        if (recognition) recognition.start();
+                    }, 1000);
+                };
+
+                recognition.onend = function() {
+                    // Automatically restart when ended
+                    if (recognition && !isMuted) recognition.start();
+                };
+
+                // Start listening
+                if (!isMuted) recognition.start();
+
             } catch(e) {
                 console.error('Speech recognition failed:', e);
                 addMessage('Voice commands not supported', 'assistant');
                 micStatusText.innerHTML = '<div class="status-dot" style="background:var(--error)"></div><span>Not Supported</span>';
                 
+                // Try again after 5 seconds
                 setTimeout(initVoiceRecognition, 5000);
             }
         }
 
-        function playNameResponse() {
+        function toggleMute() {
+            isMuted = !isMuted;
+            
+            if (isMuted) {
+                stopAudio();
+                micStatusText.innerHTML = '<div class="status-dot" style="background:var(--error)"></div><span>Muted</span>';
+                stopButton.textContent = 'Unmute';
+                if (recognition) recognition.stop();
+            } else {
+                micStatusText.innerHTML = '<div class="status-dot" style="background:var(--accent)"></div><span>Listening</span>';
+                stopButton.textContent = 'Mute';
+                if (recognition) recognition.start();
+            }
+        }
+
+        function addMessage(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', sender + '-message');
+            messageDiv.textContent = text;
+            messageArea.appendChild(messageDiv);
+            messageArea.scrollTop = messageArea.scrollHeight;
+        }
+
+        function showTyping() {
+            const typingDiv = document.createElement('div');
+            typingDiv.classList.add('typing-indicator');
+            typingDiv.innerHTML = `
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            `;
+            messageArea.appendChild(typingDiv);
+            messageArea.scrollTop = messageArea.scrollHeight;
+            return typingDiv;
+        }
+
+        function stopAudio() {
+            if (currentAudio) {
+                if (Array.isArray(currentAudio)) {
+                    currentAudio.forEach(audio => {
+                        audio.pause();
+                        audio.currentTime = 0;
+                    });
+                } else {
+                    currentAudio.pause();
+                    currentAudio.currentTime = 0;
+                }
+                currentAudio = null;
+            }
+        }
+
+        function playAudio(key) {
             if (isMuted) return;
             
             stopAudio();
             
-            const audio = new Audio(audioMap['name']);
-            currentAudio = audio;
+            const audioFile = audioMap[key];
+            if (!audioFile) {
+                // Handle special cases
+                if (key === 'welcome') {
+                    speak("I am RITU, your virtual assistant. I'm happy to serve you at our beautiful Best Western hotel. Please ask me anything related to your stay!");
+                    addMessage("I am RITU, your virtual assistant. I'm happy to serve you at our beautiful Best Western hotel. Please ask me anything related to your stay!", 'assistant');
+                    return;
+                }
+                addMessage('Command not recognized', 'assistant');
+                return;
+            }
             
-            audio.play()
-                .then(() => {
-                    addMessage("I am RITU, your virtual assistant. I'm happy to help with anything related to our beautiful hotel!", 'assistant');
-                })
-                .catch(error => {
-                    console.error('Error playing name audio:', error);
-                    speak("I am RITU, your virtual assistant. I'm happy to help with anything related to our beautiful hotel!");
-                    addMessage("I am RITU, your virtual assistant. I'm happy to help with anything related to our beautiful hotel!", 'assistant');
-                });
+            const typing = showTyping();
+            
+            if (Array.isArray(audioFile)) {
+                currentAudio = [];
+                let index = 0;
+                
+                function playNext() {
+                    if (index >= audioFile.length) {
+                        messageArea.removeChild(typing);
+                        return;
+                    }
+                    
+                    const audio = new Audio(audioFile[index]);
+                    currentAudio.push(audio);
+                    
+                    audio.play()
+                        .then(() => {
+                            audio.onended = () => {
+                                index++;
+                                playNext();
+                            };
+                        })
+                        .catch(error => {
+                            console.error('Audio playback error:', error);
+                            index++;
+                            playNext();
+                        });
+                }
+                
+                playNext();
+            } else {
+                currentAudio = new Audio(audioFile);
+                currentAudio.play()
+                    .then(() => {
+                        messageArea.removeChild(typing);
+                        addMessage(getAudioDescription(key), 'assistant');
+                    })
+                    .catch(error => {
+                        messageArea.removeChild(typing);
+                        addMessage('Error playing audio', 'assistant');
+                        console.error('Audio playback error:', error);
+                    });
+            }
+        }
+
+        function getAudioDescription(key) {
+            const descriptions = {
+                'welcome': "I am RITU, your virtual assistant. I'm happy to serve you at our beautiful Best Western hotel. Please ask me anything related to your stay!",
+                'breakfast': 'Our complimentary breakfast is served daily from 6:30 to 9:30 AM in the main lobby area.',
+                'elevator': 'Elevators are located in the middle of hallways and near side entrances for your convenience.',
+                'amenities': 'Your stay includes access to our outdoor pool, fitness center, and free WiFi.',
+                'wifi': 'Connect to our high-speed WiFi with the password provided at check-in.',
+                'pool': 'The heated outdoor pool is open from 9:30 AM to 9:00 PM daily. No lifeguard on duty.',
+                'services': 'Our front desk provides information on local restaurants and activities. Need towels? Dial 0.',
+                'checkin': 'Check-in time is 3 PM. Early arrivals are welcome if rooms are available.',
+                'housekeeping': 'Daily service runs from 9 AM to 3 PM. For immediate needs, hang the "Service Please" tag.',
+                'parking': 'Complimentary parking is available for guests. Oversized vehicles should park in designated areas.',
+                'gym': 'Our 24-hour fitness center is located on the first floor near the elevators. Equipment includes treadmills and free weights.',
+                'emergency': 'For emergencies, dial 911 immediately. For hotel emergencies, dial 0 from your room phone or contact the front desk.',
+                'policies': 'Our hotel policies include a no-smoking policy in all rooms, quiet hours from 10 PM to 7 AM, and a check-out time of 11 AM.',
+                'manager': 'The manager on duty can be contacted at the front desk 24/7 for any special requests or concerns.',
+                'review': 'We appreciate your feedback! Please consider leaving us a review on your preferred travel platform.',
+                'help': 'I can help with: breakfast hours, amenities, WiFi, pool information, services, and more!',
+                'name': 'I am RITU, your virtual assistant at Best Western Hopkinsville. How may I assist you today?'
+            };
+            return descriptions[key] || 'Here\'s information about that';
         }
 
         function speak(text) {
             if ('speechSynthesis' in window) {
-                const utterance = new SpeechSynthesisUtterance(text);
-                
-                // Set female voice if available
+                // Find a female voice if available
                 const voices = window.speechSynthesis.getVoices();
-                const femaleVoice = voices.find(voice => 
+                let femaleVoice = voices.find(voice => 
                     voice.name.includes('Female') || 
                     voice.name.includes('Woman') || 
+                    voice.name.includes('woman') || 
                     voice.name.includes('female')
                 );
+                
+                // Fallback to first available voice
+                if (!femaleVoice && voices.length > 0) {
+                    femaleVoice = voices[0];
+                }
+                
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = 0.9;
+                utterance.pitch = 1.1;
                 
                 if (femaleVoice) {
                     utterance.voice = femaleVoice;
                 }
                 
-                utterance.rate = 0.9;
-                utterance.pitch = 1.1;
                 speechSynthesis.speak(utterance);
             }
+        }
+
+        function promptForMessage() {
+            messageModal.style.display = 'flex';
+            messageText.focus();
+        }
+
+        function sendMessageToManagement() {
+            const message = messageText.value.trim();
+            if (!message) {
+                addMessage('Please enter a message to send', 'assistant');
+                return;
+            }
+
+            // In a real implementation, you would send this via an SMS API
+            // For demo purposes, we'll just show a confirmation
+            addMessage(`Message to management: "${message}"`, 'user');
+            addMessage('Your message has been sent to management. They will respond as soon as possible.', 'assistant');
+            
+            // Here's how you would actually send it (commented out for safety)
+            // window.open(`sms:${managementPhoneNumber}?body=${encodeURIComponent(message)}`, '_blank');
+            
+            messageModal.style.display = 'none';
+            messageText.value = '';
+        }
+
+        async function tellJoke() {
+            if (isMuted) return;
+            
+            const typing = showTyping();
+            
+            try {
+                // Fetch a random joke from a public API (PG-rated)
+                const response = await fetch('https://v2.jokeapi.dev/joke/Any?blacklistFlags=nsfw,religious,political,racist,sexist,explicit&type=single');
+                const data = await response.json();
+                
+                messageArea.removeChild(typing);
+                
+                if (data.joke) {
+                    addMessage('Here\'s a joke for you:', 'assistant');
+                    
+                    // Use the SpeechSynthesis API to read the joke aloud
+                    speak(data.joke);
+                    
+                    addMessage(data.joke, 'assistant');
+                } else {
+                    addMessage('I couldn\'t think of a good joke right now. Maybe try again later!', 'assistant');
+                    speak("I couldn't think of a good joke right now. Maybe ask me again later!");
+                }
+            } catch (error) {
+                console.error('Error fetching joke:', error);
+                messageArea.removeChild(typing);
+                addMessage('I tried to tell a joke but something went wrong. Maybe ask me again later!', 'assistant');
+                speak("I tried to tell a joke but something went wrong. Maybe ask me again later!");
+            }
+        }
+
+        function showCurrentDate() {
+            if (isMuted) return;
+            
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const dateString = now.toLocaleDateString('en-US', options);
+            
+            const dateDiv = document.createElement('div');
+            dateDiv.classList.add('date-display');
+            dateDiv.textContent = `Today is ${dateString}`;
+            messageArea.appendChild(dateDiv);
+            messageArea.scrollTop = messageArea.scrollHeight;
+            
+            speak(`Today is ${dateString}`);
         }
 
         async function getWeather() {
@@ -627,6 +1148,7 @@
             
             try {
                 // For demo purposes, we'll use mock data
+                // In a real implementation, you would use a weather API like OpenWeatherMap
                 const mockWeather = {
                     current: {
                         temp: 72,
@@ -673,13 +1195,15 @@
                 messageArea.appendChild(weatherDiv);
                 messageArea.scrollTop = messageArea.scrollHeight;
                 
-                // Speak the weather with female voice
+                // Speak the weather
                 speak(`The weather in Hopkinsville today is ${mockWeather.current.weather[0].description} with a temperature of ${mockWeather.current.temp} degrees Fahrenheit. Would you like to know the forecast for the next two days?`);
+                
+                // Set flag to await follow-up response
+                awaitingWeatherFollowUp = true;
                 
                 // Add follow-up question
                 setTimeout(() => {
                     addMessage('Would you like to know the forecast for the next two days?', 'assistant');
-                    awaitingWeatherResponse = true;
                 }, 1500);
                 
             } catch (error) {
@@ -690,59 +1214,71 @@
             }
         }
 
-        function showExtendedWeatherForecast() {
-            // Mock data for extended forecast
-            const forecast = [
-                {
-                    date: new Date(Date.now() + 86400000), // Tomorrow
-                    high: 75,
-                    low: 62,
-                    description: 'Sunny',
-                    icon: 'wi-day-sunny'
-                },
-                {
-                    date: new Date(Date.now() + 172800000), // Day after tomorrow
-                    high: 78,
-                    low: 65,
-                    description: 'Scattered thunderstorms',
-                    icon: 'wi-thunderstorm'
-                }
-            ];
+        function handleWeatherFollowUp(response) {
+            awaitingWeatherFollowUp = false;
             
-            // Display forecast
-            forecast.forEach(day => {
-                const options = { weekday: 'long', month: 'long', day: 'numeric' };
-                const dateString = day.date.toLocaleDateString('en-US', options);
+            if (response === 'yes') {
+                // Show extended forecast
+                const mockWeather = {
+                    daily: [
+                        {
+                            dt: Date.now() / 1000 + 86400,
+                            temp: { day: 75, night: 62 },
+                            weather: [{ description: 'Sunny', main: 'Clear', icon: '01d' }]
+                        },
+                        {
+                            dt: Date.now() / 1000 + 172800,
+                            temp: { day: 78, night: 65 },
+                            weather: [{ description: 'Scattered thunderstorms', main: 'Thunderstorm', icon: '11d' }]
+                        }
+                    ]
+                };
+                
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                const dayAfter = new Date();
+                dayAfter.setDate(dayAfter.getDate() + 2);
+                
+                const options = { weekday: 'long', month: 'short', day: 'numeric' };
                 
                 const forecastDiv = document.createElement('div');
-                forecastDiv.classList.add('weather-card');
-                forecastDiv.style.marginTop = '10px';
                 forecastDiv.innerHTML = `
-                    <div class="weather-header">
-                        <div>
-                            <div style="font-weight:600;font-size:1.1rem">${dateString}</div>
-                            <div style="font-size:0.9rem;opacity:0.9">${day.description}</div>
+                    <div class="weather-card" style="margin-top:15px;">
+                        <div style="font-weight:600;font-size:1.1rem;margin-bottom:10px;">Extended Forecast</div>
+                        
+                        <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
+                            <div style="font-weight:500;">${tomorrow.toLocaleDateString('en-US', options)}</div>
+                            <div style="display:flex;align-items:center;">
+                                <i class="wi wi-day-sunny weather-icon"></i>
+                                <div style="margin-left:10px;">${mockWeather.daily[0].temp.day}°F / ${mockWeather.daily[0].temp.night}°F</div>
+                            </div>
+                            <div>${mockWeather.daily[0].weather[0].description}</div>
                         </div>
-                        <div style="display:flex;align-items:center">
-                            <i class="wi ${day.icon} weather-icon"></i>
-                            <div class="weather-temp">H: ${day.high}° L: ${day.low}°</div>
+                        
+                        <div style="display:flex;justify-content:space-between;">
+                            <div style="font-weight:500;">${dayAfter.toLocaleDateString('en-US', options)}</div>
+                            <div style="display:flex;align-items:center;">
+                                <i class="wi wi-thunderstorm weather-icon"></i>
+                                <div style="margin-left:10px;">${mockWeather.daily[1].temp.day}°F / ${mockWeather.daily[1].temp.night}°F</div>
+                            </div>
+                            <div>${mockWeather.daily[1].weather[0].description}</div>
                         </div>
                     </div>
                 `;
                 messageArea.appendChild(forecastDiv);
-            });
-            
-            messageArea.scrollTop = messageArea.scrollHeight;
-            
-            // Speak the forecast with female voice
-            const options = { weekday: 'long', month: 'long', day: 'numeric' };
-            const tomorrow = forecast[0].date.toLocaleDateString('en-US', options);
-            const dayAfter = forecast[1].date.toLocaleDateString('en-US', options);
-            
-            speak(`Here's the extended forecast: Tomorrow, ${tomorrow}, will be ${forecast[0].description} with a high of ${forecast[0].high} and low of ${forecast[0].low} degrees. On ${dayAfter}, expect ${forecast[1].description} with a high of ${forecast[1].high} and low of ${forecast[1].low} degrees.`);
+                messageArea.scrollTop = messageArea.scrollHeight;
+                
+                // Speak the forecast
+                speak(`Tomorrow will be ${mockWeather.daily[0].weather[0].description} with highs of ${mockWeather.daily[0].temp.day} and lows of ${mockWeather.daily[0].temp.night} degrees. The next day will have ${mockWeather.daily[1].weather[0].description} with highs of ${mockWeather.daily[1].temp.day} and lows of ${mockWeather.daily[1].temp.night} degrees.`);
+            } else if (response === 'no') {
+                addMessage('Okay, let me know if you need anything else!', 'assistant');
+                speak('Okay, let me know if you need anything else!');
+            } else {
+                addMessage('I didn\'t understand your response. Please say "yes" or "no".', 'assistant');
+                speak('I didn\'t understand your response. Please say "yes" or "no".');
+                awaitingWeatherFollowUp = true;
+            }
         }
-
-        // [Rest of the functions remain the same...]
     </script>
 </body>
 </html>
