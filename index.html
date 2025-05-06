@@ -49,118 +49,898 @@
             flex-direction: column;
         }
         
-        /* [Previous CSS remains exactly the same] */
-        /* ... (All existing CSS styles remain unchanged) ... */
+        .avatar-container {
+            background: linear-gradient(135deg, var(--primary), #0047ab);
+            padding: 30px 20px;
+            text-align: center;
+            position: relative;
+            flex-shrink: 0;
+        }
+        
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid rgba(255,255,255,0.3);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            margin: 0 auto 15px;
+            background: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .avatar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+        }
+        
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .avatar-status {
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--white);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+        }
+        
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--accent);
+            margin-right: 8px;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            70% { transform: scale(1.2); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+            color: white;
+            font-weight: 500;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .subtitle {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            color: rgba(255,255,255,0.9);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+        
+        .message-area {
+            flex-grow: 1;
+            padding: 30px 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(to bottom, #f9fafc, #f1f5f9);
+        }
+        
+        .message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            position: relative;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .message:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .assistant-message {
+            background: #f1f3f6;
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+            color: var(--dark);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .user-message {
+            background: var(--primary);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .action-area {
+            padding: 15px 20px;
+            border-top: 1px solid rgba(0,0,0,0.05);
+            background: var(--white);
+            flex-shrink: 0;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--secondary);
+            color: var(--dark);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            box-shadow: 0 4px 10px rgba(255, 182, 6, 0.3);
+            min-width: 100px;
+        }
+        
+        .btn:hover {
+            background-color: #e6a800;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(255, 182, 6, 0.4);
+        }
+        
+        .btn-stop {
+            background-color: var(--error);
+            color: white;
+            box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
+        }
+        
+        .btn-stop:hover {
+            background-color: #c0392b;
+            box-shadow: 0 6px 15px rgba(231, 76, 60, 0.4);
+        }
+        
+        .typing-indicator {
+            display: flex;
+            padding: 10px 15px;
+            background: #f1f3f6;
+            border-radius: 18px;
+            align-self: flex-start;
+            margin-bottom: 15px;
+            border-bottom-left-radius: 5px;
+        }
+        
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #999;
+            border-radius: 50%;
+            margin: 0 3px;
+            animation: bounce 1.4s infinite ease-in-out;
+        }
+        
+        .typing-dot:nth-child(1) {
+            animation-delay: 0s;
+        }
+        
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes bounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-5px); }
+        }
+        
+        .suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+        }
+        
+        .suggestion-chip {
+            background: rgba(0, 53, 128, 0.1);
+            color: var(--primary);
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid rgba(0, 53, 128, 0.1);
+        }
+        
+        .suggestion-chip:hover {
+            background: rgba(0, 53, 128, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .weather-card {
+            background: linear-gradient(135deg, var(--weather-blue), #6bb9f0);
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            margin: 10px 0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .weather-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .weather-icon {
+            font-size: 2rem;
+            margin-right: 10px;
+        }
+        
+        .weather-temp {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+        
+        .weather-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        
+        .weather-detail {
+            display: flex;
+            align-items: center;
+        }
+        
+        .weather-detail i {
+            margin-right: 5px;
+        }
+        
+        .date-display {
+            background: linear-gradient(135deg, var(--secondary), #ffcc33);
+            color: var(--dark);
+            padding: 10px 15px;
+            border-radius: 12px;
+            margin: 10px 0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            font-weight: 500;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            animation: modalFadeIn 0.3s ease-out;
+        }
+        
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .modal-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        
+        .modal-input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: inherit;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        @media (max-width: 480px) {
+            .assistant-container {
+                height: 100vh;
+                max-height: -webkit-fill-available;
+                border-radius: 0;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- [Previous HTML structure remains exactly the same until the script] -->
-    <!-- ... (All existing HTML remains unchanged) ... -->
+    <div class="assistant-container">
+        <div class="avatar-container">
+            <div class="avatar">
+                <img src="https://github.com/Bestwesten/Shree/raw/12c311ea8a13889266e00b6ed280826ea8b277e8/images/ai_avatar.png" alt="RITU Virtual Assistant">
+            </div>
+            <h1>RITU Virtual Assistant</h1>
+            <p class="subtitle">Always listening, ready to help</p>
+            <div class="avatar-status" id="micStatusText">
+                <div class="status-dot"></div>
+                <span>Listening</span>
+            </div>
+        </div>
+        
+        <div class="message-area" id="messageArea">
+            <div class="assistant-message message">
+                Hello! I'm RITU, your virtual assistant at Best Western Hopkinsville. I'm happy to serve you! 
+                Ask me anything about our beautiful hotel or the local area.
+            </div>
+            <div class="suggestions">
+                <div class="suggestion-chip" data-key="welcome">Welcome</div>
+                <div class="suggestion-chip" data-key="breakfast">Breakfast</div>
+                <div class="suggestion-chip" data-key="amenities">Amenities</div>
+                <div class="suggestion-chip" data-key="wifi">Wi-Fi Help</div>
+                <div class="suggestion-chip" data-key="weather">Weather</div>
+                <div class="suggestion-chip" data-key="date">Today's Date</div>
+                <div class="suggestion-chip" data-key="services">Services</div>
+                <div class="suggestion-chip" data-key="gym">Gym/Fitness</div>
+                <div class="suggestion-chip" data-key="joke">Tell a Joke</div>
+            </div>
+        </div>
+        
+        <div class="action-area">
+            <button id="stopButton" class="btn btn-stop">Stop Audio</button>
+            <button id="helpButton" class="btn">Quick Help</button>
+        </div>
+    </div>
+
+    <!-- Message Modal -->
+    <div class="modal" id="messageModal">
+        <div class="modal-content">
+            <div class="modal-title">Send Message to Management</div>
+            <textarea id="messageText" class="modal-input" rows="4" placeholder="Type your message here..."></textarea>
+            <div class="modal-buttons">
+                <button id="cancelMessage" class="btn">Cancel</button>
+                <button id="sendMessage" class="btn">Send</button>
+            </div>
+        </div>
+    </div>
 
     <script>
-        // Audio file mapping with GitHub raw URLs - UPDATED NAME.MP3 PATH
+        // Audio file mapping with GitHub raw URLs
         const audioMap = {
-            'name': 'https://github.com/Bestwesten/Shree/raw/4e0b3ef612c2791661880331d73819422d1d02e6/audio/Name.mp3',
-            // ... (rest of audioMap remains the same)
+            'welcome': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/welcome.mp3',
+            'breakfast': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/breakfast.mp3',
+            'elevator': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/elevator.mp3',
+            'amenities': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/amenities.mp3',
+            'wifi': 'https://github.com/Bestwesten/Shree/raw/63719b6e6bfe108baa75491fd032640d06d4b927/audio/wifi.mp3',
+            'pool': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/pool.mp3',
+            'services': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/services.mp3',
+            'checkin': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/checkin.mp3',
+            'housekeeping': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/housekeeping.mp3',
+            'parking': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/parking.mp3',
+            'gym': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/gym.mp3',
+            'emergency': 'https://github.com/Bestwesten/Shree/raw/f5948c7a3cf649ebca2c67de33687a6979b0c3e0/audio/emergency.mp3',
+            'policies': 'https://github.com/Bestwesten/Shree/raw/f5948c7a3cf649ebca2c67de33687a6979b0c3e0/audio/policies.mp3',
+            'manager': 'https://github.com/Bestwesten/Shree/raw/0c5746f6d33fd0a0270f4fcef5f5917188407375/audio/Manager_Contact.mp3',
+            'review': 'https://github.com/Bestwesten/Shree/raw/0c5746f6d33fd0a0270f4fcef5f5917188407375/audio/Review.mp3',
+            'name': 'https://github.com/Bestwesten/Shree/raw/673b436793db4539572890fa7305e5acbde5f083/audio/Name.mp3',
+            'help': [
+                'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/welcome.mp3',
+                'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/amenities.mp3',
+                'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/services.mp3'
+            ]
         };
 
-        // Audio control variables
-        let currentAudio = null;
-        let lastPlayedAudio = null;
-        let isPlaying = false;
+        // Enhanced command mapping with similar sounding words and common names
+        const commandMap = {
+            // Welcome/name commands
+            'welcome': 'welcome',
+            'hello': 'welcome',
+            'hi': 'welcome',
+            'greeting': 'welcome',
+            'hey': 'welcome',
+            'hola': 'welcome',
+            'hiya': 'welcome',
+            'greetings': 'welcome',
+            'your name': 'name',
+            'who are you': 'name',
+            'introduce yourself': 'name',
+            'identify yourself': 'name',
+            'who am i talking to': 'name',
+            'what do i call you': 'name',
+            'what should i call you': 'name',
+            
+            // Breakfast commands
+            'breakfast': 'breakfast',
+            'morning meal': 'breakfast',
+            'morning food': 'breakfast',
+            'what breakfast': 'breakfast',
+            'breakfast time': 'breakfast',
+            'breakfast hours': 'breakfast',
+            'breakfast menu': 'breakfast',
+            'eat breakfast': 'breakfast',
+            'food morning': 'breakfast',
+            'breakfast served': 'breakfast',
+            'breakfast options': 'breakfast',
+            
+            // Elevator commands
+            'elevator': 'elevator',
+            'lift': 'elevator',
+            'where elevator': 'elevator',
+            'find elevator': 'elevator',
+            'elevator location': 'elevator',
+            'elevators': 'elevator',
+            'where lift': 'elevator',
+            'get elevator': 'elevator',
+            'use elevator': 'elevator',
+            
+            // Amenities commands
+            'amenities': 'amenities', // Common misspelling
+            'amenities': 'amenities',
+            'facilities': 'amenities',
+            'hotel features': 'amenities',
+            'what offer': 'amenities',
+            'what available': 'amenities',
+            'hotel amenities': 'amenities',
+            'what have': 'amenities',
+            'what provided': 'amenities',
+            'what included': 'amenities',
+            'hotel services': 'amenities',
+            
+            // WiFi commands
+            'wifi': 'wifi',
+            'wi fi': 'wifi',
+            'wi-fi': 'wifi',
+            'internet': 'wifi',
+            'wireless': 'wifi',
+            'network': 'wifi',
+            'password wifi': 'wifi',
+            'wifi password': 'wifi',
+            'get online': 'wifi',
+            'connect internet': 'wifi',
+            'internet access': 'wifi',
+            'hotel wifi': 'wifi',
+            
+            // Pool commands
+            'pool': 'pool',
+            'swimming': 'pool',
+            'swim': 'pool',
+            'pool hours': 'pool',
+            'pool time': 'pool',
+            'pool open': 'pool',
+            'use pool': 'pool',
+            'where pool': 'pool',
+            'find pool': 'pool',
+            'pool location': 'pool',
+            'pool rules': 'pool',
+            
+            // Services commands
+            'services': 'services',
+            'hotel services': 'services',
+            'what services': 'services',
+            'available services': 'services',
+            'guest services': 'services',
+            'front desk': 'services',
+            'concierge': 'services',
+            'help desk': 'services',
+            'reception': 'services',
+            'hotel help': 'services',
+            
+            // Check-in commands
+            'check in': 'checkin',
+            'checkin': 'checkin',
+            'check-in': 'checkin',
+            'arrival': 'checkin',
+            'register': 'checkin',
+            'when checkin': 'checkin',
+            'checkin time': 'checkin',
+            'checkin process': 'checkin',
+            'arrive hotel': 'checkin',
+            'checkin procedure': 'checkin',
+            'checkin hours': 'checkin',
+            
+            // Housekeeping commands
+            'housekeeping': 'housekeeping',
+            'clean room': 'housekeeping',
+            'clean my room': 'housekeeping',
+            'room service': 'housekeeping',
+            'tidy room': 'housekeeping',
+            'make bed': 'housekeeping',
+            'fresh towels': 'housekeeping',
+            'clean towels': 'housekeeping',
+            'new towels': 'housekeeping',
+            'room clean': 'housekeeping',
+            'clean service': 'housekeeping',
+            
+            // Parking commands
+            'parking': 'parking',
+            'car park': 'parking',
+            'where park': 'parking',
+            'park my car': 'parking',
+            'parking lot': 'parking',
+            'parking garage': 'parking',
+            'parking location': 'parking',
+            'find parking': 'parking',
+            'parking rules': 'parking',
+            'parking fee': 'parking',
+            'parking cost': 'parking',
+            'parking price': 'parking',
+            
+            // Gym commands
+            'gym': 'gym',
+            'fitness': 'gym',
+            'workout': 'gym',
+            'exercise': 'gym',
+            'gymnasium': 'gym',
+            'fitness center': 'gym',
+            'workout room': 'gym',
+            'exercise room': 'gym',
+            'where gym': 'gym',
+            'gym location': 'gym',
+            'gym hours': 'gym',
+            'gym open': 'gym',
+            'gym time': 'gym',
+            
+            // Emergency commands
+            'emergency': 'emergency',
+            'help emergency': 'emergency',
+            'emergency help': 'emergency',
+            'urgent help': 'emergency',
+            'need help': 'emergency',
+            'police': 'emergency',
+            'ambulance': 'emergency',
+            'fire': 'emergency',
+            'danger': 'emergency',
+            '911': 'emergency',
+            'urgent': 'emergency',
+            
+            // Policies commands
+            'policies': 'policies',
+            'rules': 'policies',
+            'hotel rules': 'policies',
+            'hotel policies': 'policies',
+            'policy': 'policies',
+            'what rules': 'policies',
+            'what policies': 'policies',
+            'hotel regulations': 'policies',
+            'hotel policy': 'policies',
+            'guest rules': 'policies',
+            
+            // Manager commands
+            'manager': 'manager',
+            'speak manager': 'manager',
+            'talk manager': 'manager',
+            'contact manager': 'manager',
+            'hotel manager': 'manager',
+            'general manager': 'manager',
+            'manager contact': 'manager',
+            'manager help': 'manager',
+            'manager phone': 'manager',
+            'manager number': 'manager',
+            
+            // Review commands
+            'review': 'review',
+            'leave review': 'review',
+            'write review': 'review',
+            'hotel review': 'review',
+            'rate hotel': 'review',
+            'feedback': 'review',
+            'leave feedback': 'review',
+            'write feedback': 'review',
+            'hotel feedback': 'review',
+            'rate stay': 'review',
+            'review stay': 'review',
+            
+            // Help commands
+            'help': 'help',
+            'need help': 'help',
+            'assistance': 'help',
+            'need assistance': 'help',
+            'what can you do': 'help',
+            'what help': 'help',
+            'options': 'help',
+            'what options': 'help',
+            'what can i ask': 'help',
+            'help me': 'help',
+            'can you help': 'help',
+            
+            // Stop commands
+            'stop': 'stop',
+            'stop listening': 'stop',
+            'be quiet': 'stop',
+            'shut up': 'stop',
+            'quiet': 'stop',
+            'mute': 'stop',
+            'silence': 'stop',
+            'stop talking': 'stop',
+            
+            // Message commands
+            'message': 'send_message',
+            'send message': 'send_message',
+            'contact management': 'send_message',
+            'message management': 'send_message',
+            'send note': 'send_message',
+            'leave message': 'send_message',
+            'write message': 'send_message',
+            
+            // Joke commands
+            'joke': 'joke',
+            'tell joke': 'joke',
+            'make laugh': 'joke',
+            'funny': 'joke',
+            'say joke': 'joke',
+            'humor': 'joke',
+            'make smile': 'joke',
+            'cheer up': 'joke',
+            
+            // Weather commands
+            'weather': 'weather',
+            'forecast': 'weather',
+            'temperature': 'weather',
+            'how hot': 'weather',
+            'how cold': 'weather',
+            'outside weather': 'weather',
+            'today weather': 'weather',
+            'weather today': 'weather',
+            'weather report': 'weather',
+            'weather forecast': 'weather',
+            'local weather': 'weather',
+            
+            // Date commands
+            'date': 'date',
+            'today date': 'date',
+            'what date': 'date',
+            'current date': 'date',
+            'today day': 'date',
+            'what day': 'date',
+            'day today': 'date',
+            'date today': 'date'
+        };
 
-        // Modified playAudio function with audio control
-        function playAudio(key) {
-            if (isMuted) return;
+        // Global variables
+        let currentAudio = null;
+        let recognition = null;
+        let isMuted = false;
+        let awaitingWeatherResponse = false;
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const managementPhoneNumber = '5134036508';
+
+        // DOM elements
+        const messageArea = document.getElementById('messageArea');
+        const micStatusText = document.getElementById('micStatusText');
+        const stopButton = document.getElementById('stopButton');
+        const helpButton = document.getElementById('helpButton');
+        const messageModal = document.getElementById('messageModal');
+        const messageText = document.getElementById('messageText');
+        const cancelMessage = document.getElementById('cancelMessage');
+        const sendMessage = document.getElementById('sendMessage');
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', function() {
+            initVoiceRecognition();
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            // Stop button
+            stopButton.addEventListener('click', toggleMute);
             
-            const audioFile = audioMap[key];
-            if (!audioFile) {
-                if (key === 'welcome') {
-                    speak("I am RITU, your virtual assistant. I'm happy to serve you at our beautiful Best Western hotel. Please ask me anything related to your stay!");
-                    addMessage("I am RITU, your virtual assistant. I'm happy to serve you at our beautiful Best Western hotel. Please ask me anything related to your stay!", 'assistant');
-                    return;
+            // Help button
+            helpButton.addEventListener('click', playHelpResponse);
+            
+            // Suggestion chips
+            document.querySelectorAll('.suggestion-chip').forEach(chip => {
+                chip.addEventListener('click', function() {
+                    const key = this.getAttribute('data-key');
+                    handleSuggestionClick(key);
+                });
+            });
+            
+            // Modal buttons
+            cancelMessage.addEventListener('click', closeMessageModal);
+            sendMessage.addEventListener('click', sendMessageToManagement);
+        }
+
+        function initVoiceRecognition() {
+            try {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                if (!SpeechRecognition) {
+                    throw new Error('Speech recognition not available');
                 }
-                addMessage('Command not recognized', 'assistant');
-                return;
-            }
-            
-            // Don't play the same audio twice unless asked again
-            if (isPlaying && lastPlayedAudio === key) {
-                addMessage('Audio is already playing', 'assistant');
-                return;
-            }
-            
-            stopAudio(); // Stop any currently playing audio
-            
-            const typing = showTyping();
-            isPlaying = true;
-            lastPlayedAudio = key;
-            
-            if (Array.isArray(audioFile)) {
-                currentAudio = [];
-                let index = 0;
                 
-                function playNext() {
-                    if (index >= audioFile.length) {
-                        messageArea.removeChild(typing);
-                        isPlaying = false;
+                recognition = new SpeechRecognition();
+                recognition.continuous = true;
+                recognition.interimResults = isMobile;
+                recognition.maxAlternatives = 1;
+                recognition.lang = 'en-US';
+
+                recognition.onstart = function() {
+                    if (!isMuted) {
+                        micStatusText.innerHTML = '<div class="status-dot" style="background:var(--accent)"></div><span>Listening</span>';
+                    }
+                };
+
+                recognition.onresult = function(event) {
+                    if (isMuted) return;
+                    
+                    const result = event.results[event.results.length - 1];
+                    
+                    if (isMobile && !result.isFinal) {
                         return;
                     }
                     
-                    const audio = new Audio(audioFile[index]);
-                    currentAudio.push(audio);
+                    const transcript = result[0].transcript.toLowerCase().trim();
+                    addMessage(transcript, 'user');
                     
-                    audio.play()
-                        .then(() => {
-                            audio.onended = () => {
-                                index++;
-                                playNext();
-                            };
-                        })
-                        .catch(error => {
-                            console.error('Audio playback error:', error);
-                            index++;
-                            playNext();
-                        });
-                }
+                    // Handle weather follow-up response
+                    if (awaitingWeatherResponse) {
+                        if (transcript.includes('yes') || transcript.includes('yeah') || transcript.includes('sure')) {
+                            showExtendedWeatherForecast();
+                        } else {
+                            addMessage('Okay, let me know if you need anything else!', 'assistant');
+                            speak('Okay, let me know if you need anything else!');
+                        }
+                        awaitingWeatherResponse = false;
+                        return;
+                    }
+                    
+                    let matchedKey = null;
+                    let highestConfidence = 0;
+                    
+                    for (const [phrase, key] of Object.entries(commandMap)) {
+                        if (transcript.includes(phrase)) {
+                            const confidence = phrase.length;
+                            if (confidence > highestConfidence) {
+                                highestConfidence = confidence;
+                                matchedKey = key;
+                            }
+                        }
+                    }
+                    
+                    if (matchedKey === 'stop') {
+                        toggleMute();
+                        addMessage('Audio muted. Say "unmute" to resume listening.', 'assistant');
+                    } else if (matchedKey === 'send_message') {
+                        promptForMessage();
+                    } else if (matchedKey === 'joke') {
+                        tellJoke();
+                    } else if (matchedKey === 'weather') {
+                        getWeather();
+                    } else if (matchedKey === 'date') {
+                        showCurrentDate();
+                    } else if (matchedKey === 'name') {
+                        playNameResponse();
+                    } else if (matchedKey) {
+                        playAudio(matchedKey);
+                    } else {
+                        addMessage('Try saying "help" for options', 'assistant');
+                    }
+                };
+
+                recognition.onerror = function(event) {
+                    console.error('Speech recognition error', event.error);
+                    
+                    if (event.error === 'no-speech' || event.error === 'audio-capture') {
+                        micStatusText.innerHTML = '<div class="status-dot" style="background:var(--error)"></div><span>Not Hearing You</span>';
+                    } else {
+                        micStatusText.innerHTML = '<div class="status-dot" style="background:var(--error)"></div><span>Error</span>';
+                    }
+                    
+                    // Try to restart recognition after error
+                    setTimeout(initVoiceRecognition, 1000);
+                };
+
+                recognition.onend = function() {
+                    if (!isMuted) {
+                        micStatusText.innerHTML = '<div class="status-dot" style="background:var(--error)"></div><span>Not Listening</span>';
+                    }
+                    
+                    // Restart recognition if not muted
+                    if (!isMuted) {
+                        setTimeout(() => {
+                            try {
+                                if (recognition) recognition.start();
+                            } catch(e) {
+                                console.error('Error restarting recognition:', e);
+                                setTimeout(initVoiceRecognition, 1000);
+                            }
+                        }, 500);
+                    }
+                };
+
+                // Start recognition
+                recognition.start();
+            } catch(e) {
+                console.error('Speech recognition failed:', e);
+                addMessage('Voice commands not supported', 'assistant');
+                micStatusText.innerHTML = '<div class="status-dot" style="background:var(--error)"></div><span>Not Supported</span>';
                 
-                playNext();
-            } else {
-                currentAudio = new Audio(audioFile);
-                currentAudio.play()
-                    .then(() => {
-                        messageArea.removeChild(typing);
-                        addMessage(getAudioDescription(key), 'assistant');
-                        isPlaying = false;
-                    })
-                    .catch(error => {
-                        messageArea.removeChild(typing);
-                        addMessage('Error playing audio', 'assistant');
-                        console.error('Audio playback error:', error);
-                        isPlaying = false;
-                    });
+                setTimeout(initVoiceRecognition, 5000);
             }
         }
 
-        // Modified stopAudio function
+        function toggleMute() {
+            isMuted = !isMuted;
+            
+            if (isMuted) {
+                stopAudio();
+                stopButton.textContent = 'Start Audio';
+                micStatusText.innerHTML = '<div class="status-dot" style="background:var(--error)"></div><span>Muted</span>';
+                
+                if (recognition) {
+                    recognition.stop();
+                }
+            } else {
+                stopButton.textContent = 'Stop Audio';
+                micStatusText.innerHTML = '<div class="status-dot" style="background:var(--accent)"></div><span>Listening</span>';
+                
+                if (recognition) {
+                    try {
+                        recognition.start();
+                    } catch(e) {
+                        console.error('Error restarting recognition:', e);
+                        initVoiceRecognition();
+                    }
+                }
+            }
+        }
+
         function stopAudio() {
             if (currentAudio) {
-                if (Array.isArray(currentAudio)) {
-                    currentAudio.forEach(audio => {
-                        audio.pause();
-                        audio.currentTime = 0;
-                    });
-                } else {
-                    currentAudio.pause();
-                    currentAudio.currentTime = 0;
-                }
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
                 currentAudio = null;
-                isPlaying = false;
+            }
+            
+            if ('speechSynthesis' in window) {
+                speechSynthesis.cancel();
             }
         }
 
-        // [Rest of the JavaScript remains the same]
-        // ... (All other functions remain unchanged) ...
-    </script>
-</body>
-</html>
+        function addMessage(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', sender + '-message');
+            messageDiv.textContent = text;
+            messageArea.appendChild(messageDiv);
+            messageArea.scrollTop = messageArea.scrollHeight;
+        }
+
+        function showTyping() {
+            const typingDiv = document.createElement('div');
+            typingDiv.classList.add('typing-indicator');
+            typingDiv.innerHTML = `
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            `;
+            messageArea
