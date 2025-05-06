@@ -376,6 +376,24 @@
             gap: 10px;
         }
         
+        .qr-code {
+            width: 150px;
+            height: 150px;
+            margin: 10px auto;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        
+        .qr-code img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        
         @media (max-width: 480px) {
             .assistant-container {
                 height: 100vh;
@@ -453,7 +471,7 @@
             'policies': 'https://github.com/Bestwesten/Shree/raw/f5948c7a3cf649ebca2c67de33687a6979b0c3e0/audio/policies.mp3',
             'manager': 'https://github.com/Bestwesten/Shree/raw/0c5746f6d33fd0a0270f4fcef5f5917188407375/audio/Manager_Contact.mp3',
             'review': 'https://github.com/Bestwesten/Shree/raw/0c5746f6d33fd0a0270f4fcef5f5917188407375/audio/Review.mp3',
-            'name': 'https://github.com/Bestwesten/Shree/raw/673b436793db4539572890fa7305e5acbde5f083/audio/Name.mp3',
+            'name': 'https://github.com/Bestwesten/Shree/blob/4e0b3ef612c2791661880331d73819422d1d02e6/audio/Name.mp3',
             'help': [
                 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/welcome.mp3',
                 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/amenities.mp3',
@@ -463,7 +481,7 @@
 
         // Enhanced command mapping with similar sounding words and common names
         const commandMap = {
-            // Welcome/name commands
+            // Welcome commands
             'welcome': 'welcome',
             'hello': 'welcome',
             'hi': 'welcome',
@@ -475,233 +493,184 @@
             'your name': 'name',
             'who are you': 'name',
             'introduce yourself': 'name',
-            'identify yourself': 'name',
-            'who am i talking to': 'name',
-            'what do i call you': 'name',
-            'what should i call you': 'name',
+            'ritu': 'name',
+            'reetu': 'name',
+            'reetoo': 'name',
+            'are you ritu': 'name',
+            'is your name ritu': 'name',
             
             // Breakfast commands
             'breakfast': 'breakfast',
-            'morning meal': 'breakfast',
+            'food': 'breakfast',
+            'eat': 'breakfast',
+            'meal': 'breakfast',
+            'dining': 'breakfast',
+            'hungry': 'breakfast',
             'morning food': 'breakfast',
-            'what breakfast': 'breakfast',
-            'breakfast time': 'breakfast',
-            'breakfast hours': 'breakfast',
-            'breakfast menu': 'breakfast',
-            'eat breakfast': 'breakfast',
-            'food morning': 'breakfast',
-            'breakfast served': 'breakfast',
-            'breakfast options': 'breakfast',
+            'break fast': 'breakfast',
+            'brunch': 'breakfast',
             
             // Elevator commands
             'elevator': 'elevator',
             'lift': 'elevator',
-            'where elevator': 'elevator',
-            'find elevator': 'elevator',
-            'elevator location': 'elevator',
-            'elevators': 'elevator',
-            'where lift': 'elevator',
-            'get elevator': 'elevator',
-            'use elevator': 'elevator',
+            'elevate': 'elevator',
+            'upstairs': 'elevator',
+            'downstairs': 'elevator',
+            'stairs': 'elevator',
+            'escalator': 'elevator',
             
             // Amenities commands
-            'amenities': 'amenities', // Common misspelling
             'amenities': 'amenities',
+            'features': 'amenities',
             'facilities': 'amenities',
-            'hotel features': 'amenities',
-            'what offer': 'amenities',
-            'what available': 'amenities',
-            'hotel amenities': 'amenities',
-            'what have': 'amenities',
-            'what provided': 'amenities',
-            'what included': 'amenities',
-            'hotel services': 'amenities',
+            'services': 'amenities',
+            'offerings': 'amenities',
+            'what do you have': 'amenities',
+            'what\'s available': 'amenities',
+            'what\'s included': 'amenities',
             
             // WiFi commands
             'wifi': 'wifi',
             'wi fi': 'wifi',
             'wi-fi': 'wifi',
             'internet': 'wifi',
-            'wireless': 'wifi',
             'network': 'wifi',
-            'password wifi': 'wifi',
-            'wifi password': 'wifi',
-            'get online': 'wifi',
-            'connect internet': 'wifi',
-            'internet access': 'wifi',
-            'hotel wifi': 'wifi',
+            'connection': 'wifi',
+            'wireless': 'wifi',
+            'web': 'wifi',
+            'online': 'wifi',
+            'password': 'wifi',
+            'wi': 'wifi',
+            'why fi': 'wifi',
+            'wife': 'wifi',
+            'wi five': 'wifi',
             
             // Pool commands
             'pool': 'pool',
-            'swimming': 'pool',
             'swim': 'pool',
-            'pool hours': 'pool',
-            'pool time': 'pool',
-            'pool open': 'pool',
-            'use pool': 'pool',
-            'where pool': 'pool',
-            'find pool': 'pool',
-            'pool location': 'pool',
-            'pool rules': 'pool',
+            'swimming': 'pool',
+            'water': 'pool',
+            'hot tub': 'pool',
+            'jacuzzi': 'pool',
+            'dip': 'pool',
+            'cool off': 'pool',
+            'chill': 'pool',
             
             // Services commands
             'services': 'services',
-            'hotel services': 'services',
-            'what services': 'services',
-            'available services': 'services',
-            'guest services': 'services',
+            'help': 'services',
+            'assistance': 'services',
+            'support': 'services',
             'front desk': 'services',
-            'concierge': 'services',
-            'help desk': 'services',
             'reception': 'services',
-            'hotel help': 'services',
+            'concierge': 'services',
+            'service': 'services',
+            'serves': 'services',
             
             // Check-in commands
-            'check in': 'checkin',
             'checkin': 'checkin',
+            'check in': 'checkin',
             'check-in': 'checkin',
             'arrival': 'checkin',
+            'arrive': 'checkin',
             'register': 'checkin',
-            'when checkin': 'checkin',
-            'checkin time': 'checkin',
-            'checkin process': 'checkin',
-            'arrive hotel': 'checkin',
-            'checkin procedure': 'checkin',
-            'checkin hours': 'checkin',
+            'registration': 'checkin',
+            'check': 'checkin',
+            'checking': 'checkin',
             
             // Housekeeping commands
             'housekeeping': 'housekeeping',
-            'clean room': 'housekeeping',
-            'clean my room': 'housekeeping',
+            'clean': 'housekeeping',
+            'cleaning': 'housekeeping',
+            'maid': 'housekeeping',
+            'service': 'housekeeping',
+            'towels': 'housekeeping',
+            'sheets': 'housekeeping',
+            'make up room': 'housekeeping',
             'room service': 'housekeeping',
-            'tidy room': 'housekeeping',
-            'make bed': 'housekeeping',
-            'fresh towels': 'housekeeping',
-            'clean towels': 'housekeeping',
-            'new towels': 'housekeeping',
-            'room clean': 'housekeeping',
-            'clean service': 'housekeeping',
             
             // Parking commands
             'parking': 'parking',
-            'car park': 'parking',
-            'where park': 'parking',
-            'park my car': 'parking',
-            'parking lot': 'parking',
-            'parking garage': 'parking',
-            'parking location': 'parking',
-            'find parking': 'parking',
-            'parking rules': 'parking',
-            'parking fee': 'parking',
-            'parking cost': 'parking',
-            'parking price': 'parking',
+            'park': 'parking',
+            'car': 'parking',
+            'vehicle': 'parking',
+            'where to park': 'parking',
+            'auto': 'parking',
+            'garage': 'parking',
+            'lot': 'parking',
+            'valet': 'parking',
             
             // Gym commands
             'gym': 'gym',
+            'exercise': 'gym',
             'fitness': 'gym',
             'workout': 'gym',
-            'exercise': 'gym',
+            'train': 'gym',
+            'weights': 'gym',
+            'jim': 'gym',
+            'gem': 'gym',
+            'gin': 'gym',
+            'jym': 'gym',
             'gymnasium': 'gym',
             'fitness center': 'gym',
-            'workout room': 'gym',
             'exercise room': 'gym',
-            'where gym': 'gym',
-            'gym location': 'gym',
-            'gym hours': 'gym',
-            'gym open': 'gym',
-            'gym time': 'gym',
+            'work out': 'gym',
+            'treadmill': 'gym',
             
             // Emergency commands
             'emergency': 'emergency',
-            'help emergency': 'emergency',
-            'emergency help': 'emergency',
-            'urgent help': 'emergency',
-            'need help': 'emergency',
-            'police': 'emergency',
-            'ambulance': 'emergency',
-            'fire': 'emergency',
+            'emergencies': 'emergency',
+            'help me': 'emergency',
+            'urgent': 'emergency',
             'danger': 'emergency',
             '911': 'emergency',
-            'urgent': 'emergency',
+            'police': 'emergency',
+            'fire': 'emergency',
+            'medical': 'emergency',
+            'accident': 'emergency',
             
             // Policies commands
             'policies': 'policies',
-            'rules': 'policies',
-            'hotel rules': 'policies',
-            'hotel policies': 'policies',
             'policy': 'policies',
-            'what rules': 'policies',
-            'what policies': 'policies',
-            'hotel regulations': 'policies',
-            'hotel policy': 'policies',
-            'guest rules': 'policies',
+            'rules': 'policies',
+            'regulations': 'policies',
+            'procedures': 'policies',
+            'guidelines': 'policies',
+            'hotel rules': 'policies',
+            'house rules': 'policies',
             
             // Manager commands
             'manager': 'manager',
-            'speak manager': 'manager',
-            'talk manager': 'manager',
+            'manager on duty': 'manager',
+            'supervisor': 'manager',
+            'boss': 'manager',
+            'management': 'manager',
+            'speak to manager': 'manager',
             'contact manager': 'manager',
+            'head': 'manager',
+            'director': 'manager',
+            'admin': 'manager',
+            'administrator': 'manager',
             'hotel manager': 'manager',
             'general manager': 'manager',
-            'manager contact': 'manager',
-            'manager help': 'manager',
-            'manager phone': 'manager',
-            'manager number': 'manager',
+            'shift manager': 'manager',
             
             // Review commands
             'review': 'review',
-            'leave review': 'review',
-            'write review': 'review',
-            'hotel review': 'review',
-            'rate hotel': 'review',
             'feedback': 'review',
-            'leave feedback': 'review',
-            'write feedback': 'review',
-            'hotel feedback': 'review',
-            'rate stay': 'review',
-            'review stay': 'review',
-            
-            // Help commands
-            'help': 'help',
-            'need help': 'help',
-            'assistance': 'help',
-            'need assistance': 'help',
-            'what can you do': 'help',
-            'what help': 'help',
-            'options': 'help',
-            'what options': 'help',
-            'what can i ask': 'help',
-            'help me': 'help',
-            'can you help': 'help',
-            
-            // Stop commands
-            'stop': 'stop',
-            'stop listening': 'stop',
-            'be quiet': 'stop',
-            'shut up': 'stop',
-            'quiet': 'stop',
-            'mute': 'stop',
-            'silence': 'stop',
-            'stop talking': 'stop',
-            
-            // Message commands
-            'message': 'send_message',
-            'send message': 'send_message',
-            'contact management': 'send_message',
-            'message management': 'send_message',
-            'send note': 'send_message',
-            'leave message': 'send_message',
-            'write message': 'send_message',
-            
-            // Joke commands
-            'joke': 'joke',
-            'tell joke': 'joke',
-            'make laugh': 'joke',
-            'funny': 'joke',
-            'say joke': 'joke',
-            'humor': 'joke',
-            'make smile': 'joke',
-            'cheer up': 'joke',
+            'rating': 'review',
+            'comment': 'review',
+            'survey': 'review',
+            'evaluation': 'review',
+            'rate': 'review',
+            'how was it': 'review',
+            'opinion': 'review',
+            'experience': 'review',
+            'thoughts': 'review',
+            'suggestions': 'review',
+            'comments': 'review',
+            'compliment': 'review',
+            'complaints': 'review',
             
             // Weather commands
             'weather': 'weather',
@@ -709,66 +678,193 @@
             'temperature': 'weather',
             'how hot': 'weather',
             'how cold': 'weather',
-            'outside weather': 'weather',
-            'today weather': 'weather',
             'weather today': 'weather',
             'weather report': 'weather',
-            'weather forecast': 'weather',
-            'local weather': 'weather',
+            'outside': 'weather',
+            'climate': 'weather',
+            'humidity': 'weather',
+            'rain': 'weather',
+            'sunny': 'weather',
+            'cloudy': 'weather',
             
             // Date commands
             'date': 'date',
-            'today date': 'date',
-            'what date': 'date',
-            'current date': 'date',
-            'today day': 'date',
+            'today': 'date',
             'what day': 'date',
+            'current date': 'date',
             'day today': 'date',
-            'date today': 'date'
+            'what\'s today': 'date',
+            'today\'s date': 'date',
+            'calendar': 'date',
+            
+            // Joke commands
+            'joke': 'joke',
+            'tell me a joke': 'joke',
+            'make me laugh': 'joke',
+            'funny': 'joke',
+            'humor': 'joke',
+            'knock knock': 'joke',
+            'something funny': 'joke',
+            'entertain me': 'joke',
+            'cheer me up': 'joke',
+            
+            // Send message commands
+            'send message': 'send_message',
+            'text manager': 'send_message',
+            'contact management': 'send_message',
+            'message management': 'send_message',
+            'send text': 'send_message',
+            'send msg': 'send_message',
+            'text management': 'send_message',
+            'notify manager': 'send_message',
+            
+            // Stop commands
+            'stop': 'stop',
+            'quiet': 'stop',
+            'shut up': 'stop',
+            'silence': 'stop',
+            'enough': 'stop',
+            'halt': 'stop',
+            'cease': 'stop',
+            'mute': 'stop',
+            'pause': 'stop',
+            'end': 'stop',
+            'cancel': 'stop',
+            'no more': 'stop',
+            'that\'s enough': 'stop',
+            'stop talking': 'stop',
+            'be quiet': 'stop',
+            'quiet down': 'stop',
+            
+            // Yes/No responses
+            'yes': 'yes',
+            'yeah': 'yes',
+            'yep': 'yes',
+            'sure': 'yes',
+            'okay': 'yes',
+            'ok': 'yes',
+            'affirmative': 'yes',
+            'certainly': 'yes',
+            'absolutely': 'yes',
+            'definitely': 'yes',
+            'indeed': 'yes',
+            'no': 'no',
+            'nope': 'no',
+            'nah': 'no',
+            'negative': 'no',
+            'not now': 'no',
+            'later': 'no',
+            'never': 'no',
+            'not really': 'no',
+            
+            // Status commands
+            'tired': 'tired',
+            'sleepy': 'tired',
+            'hungry': 'tired',
+            'exhausted': 'tired',
+            'fatigued': 'tired',
+            'weary': 'tired',
+            'drowsy': 'tired',
+            'sleep': 'tired',
+            'food': 'tired',
+            'eat': 'tired',
+            'starving': 'tired',
+            
+            // Review confirmation
+            'done': 'review_done',
+            'finished': 'review_done',
+            'completed': 'review_done',
+            'submitted': 'review_done',
+            'scanned': 'review_done',
+            'it\'s done': 'review_done',
+            'all set': 'review_done',
+            'completed review': 'review_done',
+            'review submitted': 'review_done',
+            'qr scanned': 'review_done'
         };
 
         // Global variables
         let currentAudio = null;
         let recognition = null;
         let isMuted = false;
-        let awaitingWeatherResponse = false;
+        let awaitingWeatherFollowUp = false;
+        let awaitingReviewConfirmation = false;
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         const managementPhoneNumber = '5134036508';
 
         // DOM elements
-        const messageArea = document.getElementById('messageArea');
         const micStatusText = document.getElementById('micStatusText');
+        const messageArea = document.getElementById('messageArea');
         const stopButton = document.getElementById('stopButton');
         const helpButton = document.getElementById('helpButton');
+        const suggestionChips = document.querySelectorAll('.suggestion-chip');
         const messageModal = document.getElementById('messageModal');
         const messageText = document.getElementById('messageText');
         const cancelMessage = document.getElementById('cancelMessage');
         const sendMessage = document.getElementById('sendMessage');
 
-        // Initialize on load
+        // Initialize with microphone always on
         document.addEventListener('DOMContentLoaded', function() {
-            initVoiceRecognition();
-            setupEventListeners();
-        });
-
-        function setupEventListeners() {
-            // Stop button
-            stopButton.addEventListener('click', toggleMute);
-            
-            // Help button
-            helpButton.addEventListener('click', playHelpResponse);
-            
-            // Suggestion chips
-            document.querySelectorAll('.suggestion-chip').forEach(chip => {
+            // Setup button click handlers
+            suggestionChips.forEach(chip => {
                 chip.addEventListener('click', function() {
                     const key = this.getAttribute('data-key');
-                    handleSuggestionClick(key);
+                    if (key === 'joke') {
+                        tellJoke();
+                    } else if (key === 'weather') {
+                        getWeather();
+                    } else if (key === 'date') {
+                        showCurrentDate();
+                    } else {
+                        playAudio(key);
+                    }
                 });
             });
+
+            stopButton.addEventListener('click', toggleMute);
+            helpButton.addEventListener('click', () => playAudio('help'));
             
-            // Modal buttons
-            cancelMessage.addEventListener('click', closeMessageModal);
+            // Message modal handlers
+            cancelMessage.addEventListener('click', () => {
+                messageModal.style.display = 'none';
+                messageText.value = '';
+            });
+            
             sendMessage.addEventListener('click', sendMessageToManagement);
+            
+            // Start microphone immediately
+            startMicrophone();
+            
+            // Initial greeting
+            setTimeout(() => {
+                speak("Hello! I'm RITU, your virtual assistant at Best Western Hopkinsville. How may I assist you today?");
+            }, 1000);
+        });
+
+        function startMicrophone() {
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                addMessage('Voice commands not supported on this browser', 'assistant');
+                micStatusText.innerHTML = '<div class="status-dot" style="background:var(--error)"></div><span>Not Supported</span>';
+                return;
+            }
+
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(function(stream) {
+                    window.localStream = stream;
+                    initVoiceRecognition();
+                })
+                .catch(function(err) {
+                    console.error("Microphone access error:", err);
+                    let errorMessage = 'Could not access microphone';
+                    if (err.name === 'NotAllowedError') {
+                        errorMessage = 'Please allow microphone access in your browser settings';
+                    }
+                    addMessage(errorMessage, 'assistant');
+                    micStatusText.innerHTML = '<div class="status-dot" style="background:var(--error)"></div><span>Error</span>';
+                    
+                    // Try again after 3 seconds
+                    setTimeout(startMicrophone, 3000);
+                });
         }
 
         function initVoiceRecognition() {
@@ -802,18 +898,6 @@
                     const transcript = result[0].transcript.toLowerCase().trim();
                     addMessage(transcript, 'user');
                     
-                    // Handle weather follow-up response
-                    if (awaitingWeatherResponse) {
-                        if (transcript.includes('yes') || transcript.includes('yeah') || transcript.includes('sure')) {
-                            showExtendedWeatherForecast();
-                        } else {
-                            addMessage('Okay, let me know if you need anything else!', 'assistant');
-                            speak('Okay, let me know if you need anything else!');
-                        }
-                        awaitingWeatherResponse = false;
-                        return;
-                    }
-                    
                     let matchedKey = null;
                     let highestConfidence = 0;
                     
@@ -839,7 +923,14 @@
                     } else if (matchedKey === 'date') {
                         showCurrentDate();
                     } else if (matchedKey === 'name') {
-                        playNameResponse();
+                        playAudio('name');
+                        addMessage('I am RITU, your virtual assistant', 'assistant');
+                    } else if (awaitingWeatherFollowUp) {
+                        handleWeatherFollowUp(matchedKey);
+                    } else if (awaitingReviewConfirmation) {
+                        handleReviewConfirmation(matchedKey);
+                    } else if (matchedKey === 'tired') {
+                        handleTiredResponse();
                     } else if (matchedKey) {
                         playAudio(matchedKey);
                     } else {
@@ -848,43 +939,31 @@
                 };
 
                 recognition.onerror = function(event) {
-                    console.error('Speech recognition error', event.error);
-                    
-                    if (event.error === 'no-speech' || event.error === 'audio-capture') {
-                        micStatusText.innerHTML = '<div class="status-dot" style="background:var(--error)"></div><span>Not Hearing You</span>';
-                    } else {
+                    console.error('Speech recognition error:', event.error);
+                    if (!isMuted) {
                         micStatusText.innerHTML = '<div class="status-dot" style="background:var(--error)"></div><span>Error</span>';
                     }
                     
-                    // Try to restart recognition after error
-                    setTimeout(initVoiceRecognition, 1000);
+                    // Automatically restart on error
+                    setTimeout(() => {
+                        if (recognition) recognition.start();
+                    }, 1000);
                 };
 
                 recognition.onend = function() {
-                    if (!isMuted) {
-                        micStatusText.innerHTML = '<div class="status-dot" style="background:var(--error)"></div><span>Not Listening</span>';
-                    }
-                    
-                    // Restart recognition if not muted
-                    if (!isMuted) {
-                        setTimeout(() => {
-                            try {
-                                if (recognition) recognition.start();
-                            } catch(e) {
-                                console.error('Error restarting recognition:', e);
-                                setTimeout(initVoiceRecognition, 1000);
-                            }
-                        }, 500);
-                    }
+                    // Automatically restart when ended
+                    if (recognition && !isMuted) recognition.start();
                 };
 
-                // Start recognition
-                recognition.start();
+                // Start listening
+                if (!isMuted) recognition.start();
+
             } catch(e) {
                 console.error('Speech recognition failed:', e);
                 addMessage('Voice commands not supported', 'assistant');
                 micStatusText.innerHTML = '<div class="status-dot" style="background:var(--error)"></div><span>Not Supported</span>';
                 
+                // Try again after 5 seconds
                 setTimeout(initVoiceRecognition, 5000);
             }
         }
@@ -894,36 +973,13 @@
             
             if (isMuted) {
                 stopAudio();
-                stopButton.textContent = 'Start Audio';
                 micStatusText.innerHTML = '<div class="status-dot" style="background:var(--error)"></div><span>Muted</span>';
-                
-                if (recognition) {
-                    recognition.stop();
-                }
+                stopButton.textContent = 'Unmute';
+                if (recognition) recognition.stop();
             } else {
-                stopButton.textContent = 'Stop Audio';
                 micStatusText.innerHTML = '<div class="status-dot" style="background:var(--accent)"></div><span>Listening</span>';
-                
-                if (recognition) {
-                    try {
-                        recognition.start();
-                    } catch(e) {
-                        console.error('Error restarting recognition:', e);
-                        initVoiceRecognition();
-                    }
-                }
-            }
-        }
-
-        function stopAudio() {
-            if (currentAudio) {
-                currentAudio.pause();
-                currentAudio.currentTime = 0;
-                currentAudio = null;
-            }
-            
-            if ('speechSynthesis' in window) {
-                speechSynthesis.cancel();
+                stopButton.textContent = 'Mute';
+                if (recognition) recognition.start();
             }
         }
 
@@ -943,4 +999,383 @@
                 <div class="typing-dot"></div>
                 <div class="typing-dot"></div>
             `;
-            messageArea
+            messageArea.appendChild(typingDiv);
+            messageArea.scrollTop = messageArea.scrollHeight;
+            return typingDiv;
+        }
+
+        function stopAudio() {
+            if (currentAudio) {
+                if (Array.isArray(currentAudio)) {
+                    currentAudio.forEach(audio => {
+                        audio.pause();
+                        audio.currentTime = 0;
+                    });
+                } else {
+                    currentAudio.pause();
+                    currentAudio.currentTime = 0;
+                }
+                currentAudio = null;
+            }
+        }
+
+        function playAudio(key) {
+            if (isMuted) return;
+            
+            stopAudio();
+            
+            const audioFile = audioMap[key];
+            if (!audioFile) {
+                // Handle special cases
+                if (key === 'welcome') {
+                    speak("I am RITU, your virtual assistant. I'm happy to serve you at our beautiful Best Western hotel. Please ask me anything related to your stay!");
+                    addMessage("I am RITU, your virtual assistant. I'm happy to serve you at our beautiful Best Western hotel. Please ask me anything related to your stay!", 'assistant');
+                    return;
+                }
+                addMessage('Command not recognized', 'assistant');
+                return;
+            }
+            
+            const typing = showTyping();
+            
+            if (Array.isArray(audioFile)) {
+                currentAudio = [];
+                let index = 0;
+                
+                function playNext() {
+                    if (index >= audioFile.length) {
+                        messageArea.removeChild(typing);
+                        return;
+                    }
+                    
+                    const audio = new Audio(audioFile[index]);
+                    currentAudio.push(audio);
+                    
+                    audio.play()
+                        .then(() => {
+                            audio.onended = () => {
+                                index++;
+                                playNext();
+                            };
+                        })
+                        .catch(error => {
+                            console.error('Audio playback error:', error);
+                            index++;
+                            playNext();
+                        });
+                }
+                
+                playNext();
+            } else {
+                currentAudio = new Audio(audioFile);
+                currentAudio.play()
+                    .then(() => {
+                        messageArea.removeChild(typing);
+                        addMessage(getAudioDescription(key), 'assistant');
+                    })
+                    .catch(error => {
+                        messageArea.removeChild(typing);
+                        addMessage('Error playing audio', 'assistant');
+                        console.error('Audio playback error:', error);
+                    });
+            }
+        }
+
+        function getAudioDescription(key) {
+            const descriptions = {
+                'welcome': "I am RITU, your virtual assistant. I'm happy to serve you at our beautiful Best Western hotel. Please ask me anything related to your stay!",
+                'breakfast': 'Our complimentary breakfast is served daily from 6:30 to 9:30 AM in the main lobby area.',
+                'elevator': 'Elevators are located in the middle of hallways and near side entrances for your convenience.',
+                'amenities': 'Your stay includes access to our outdoor pool, fitness center, and free WiFi.',
+                'wifi': 'Connect to our high-speed WiFi with the password provided at check-in.',
+                'pool': 'The heated outdoor pool is open from 9:30 AM to 9:00 PM daily. No lifeguard on duty.',
+                'services': 'Our front desk provides information on local restaurants and activities. Need towels? Dial 0.',
+                'checkin': 'Check-in time is 3 PM. Early arrivals are welcome if rooms are available.',
+                'housekeeping': 'Daily service runs from 9 AM to 3 PM. For immediate needs, hang the "Service Please" tag.',
+                'parking': 'Complimentary parking is available for guests. Oversized vehicles should park in designated areas.',
+                'gym': 'Our 24-hour fitness center is located on the first floor near the elevators. Equipment includes treadmills and free weights.',
+                'emergency': 'For emergencies, dial 911 immediately. For hotel emergencies, dial 0 from your room phone or contact the front desk.',
+                'policies': 'Our hotel policies include a no-smoking policy in all rooms, quiet hours from 10 PM to 7 AM, and a check-out time of 11 AM.',
+                'manager': 'The manager on duty can be contacted at the front desk 24/7 for any special requests or concerns.',
+                'review': 'We appreciate your feedback! Please consider leaving us a review on your preferred travel platform.',
+                'help': 'I can help with: breakfast hours, amenities, WiFi, pool information, services, and more!',
+                'name': 'I am RITU, your virtual assistant at Best Western Hopkinsville. How may I assist you today?'
+            };
+            return descriptions[key] || 'Here\'s information about that';
+        }
+
+        function speak(text) {
+            if ('speechSynthesis' in window) {
+                // Find a female voice if available
+                const voices = window.speechSynthesis.getVoices();
+                let femaleVoice = voices.find(voice => 
+                    voice.name.includes('Female') || 
+                    voice.name.includes('Woman') || 
+                    voice.name.includes('woman') || 
+                    voice.name.includes('female')
+                );
+                
+                // Fallback to first available voice
+                if (!femaleVoice && voices.length > 0) {
+                    femaleVoice = voices[0];
+                }
+                
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = 0.9;
+                utterance.pitch = 1.1;
+                
+                if (femaleVoice) {
+                    utterance.voice = femaleVoice;
+                }
+                
+                speechSynthesis.speak(utterance);
+            }
+        }
+
+        function promptForMessage() {
+            messageModal.style.display = 'flex';
+            messageText.focus();
+        }
+
+        function sendMessageToManagement() {
+            const message = messageText.value.trim();
+            if (!message) {
+                addMessage('Please enter a message to send', 'assistant');
+                return;
+            }
+
+            // In a real implementation, you would send this via an SMS API
+            // For demo purposes, we'll just show a confirmation
+            addMessage(`Message to management: "${message}"`, 'user');
+            addMessage('Your message has been sent to management. They will respond as soon as possible.', 'assistant');
+            
+            // Here's how you would actually send it (commented out for safety)
+            // window.open(`sms:${managementPhoneNumber}?body=${encodeURIComponent(message)}`, '_blank');
+            
+            messageModal.style.display = 'none';
+            messageText.value = '';
+        }
+
+        async function tellJoke() {
+            if (isMuted) return;
+            
+            const typing = showTyping();
+            
+            try {
+                // Fetch a random joke from a public API (PG-rated)
+                const response = await fetch('https://v2.jokeapi.dev/joke/Any?blacklistFlags=nsfw,religious,political,racist,sexist,explicit&type=single');
+                const data = await response.json();
+                
+                messageArea.removeChild(typing);
+                
+                if (data.joke) {
+                    addMessage('Here\'s a joke for you:', 'assistant');
+                    
+                    // Use the SpeechSynthesis API to read the joke aloud
+                    speak(data.joke);
+                    
+                    addMessage(data.joke, 'assistant');
+                } else {
+                    addMessage('I couldn\'t think of a good joke right now. Maybe try again later!', 'assistant');
+                    speak("I couldn't think of a good joke right now. Maybe ask me again later!");
+                }
+            } catch (error) {
+                console.error('Error fetching joke:', error);
+                messageArea.removeChild(typing);
+                addMessage('I tried to tell a joke but something went wrong. Maybe ask me again later!', 'assistant');
+                speak("I tried to tell a joke but something went wrong. Maybe ask me again later!");
+            }
+        }
+
+        function showCurrentDate() {
+            if (isMuted) return;
+            
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const dateString = now.toLocaleDateString('en-US', options);
+            
+            const dateDiv = document.createElement('div');
+            dateDiv.classList.add('date-display');
+            dateDiv.textContent = `Today is ${dateString}`;
+            messageArea.appendChild(dateDiv);
+            messageArea.scrollTop = messageArea.scrollHeight;
+            
+            speak(`Today is ${dateString}`);
+        }
+
+        async function getWeather() {
+            if (isMuted) return;
+            
+            const typing = showTyping();
+            
+            try {
+                // For demo purposes, we'll use mock data
+                // In a real implementation, you would use a weather API like OpenWeatherMap
+                const mockWeather = {
+                    current: {
+                        temp: 72,
+                        feels_like: 74,
+                        humidity: 65,
+                        wind_speed: 8,
+                        weather: [{ description: 'Partly cloudy', main: 'Clouds', icon: '03d' }]
+                    },
+                    daily: [
+                        {
+                            dt: Date.now() / 1000 + 86400,
+                            temp: { day: 75, night: 62 },
+                            weather: [{ description: 'Sunny', main: 'Clear', icon: '01d' }]
+                        },
+                        {
+                            dt: Date.now() / 1000 + 172800,
+                            temp: { day: 78, night: 65 },
+                            weather: [{ description: 'Scattered thunderstorms', main: 'Thunderstorm', icon: '11d' }]
+                        }
+                    ]
+                };
+                
+                messageArea.removeChild(typing);
+                
+                // Display today's weather
+                const weatherDiv = document.createElement('div');
+                weatherDiv.classList.add('weather-card');
+                weatherDiv.innerHTML = `
+                    <div class="weather-header">
+                        <div>
+                            <div style="font-weight:600;font-size:1.1rem">Weather in Hopkinsville, KY</div>
+                            <div style="font-size:0.9rem;opacity:0.9">${mockWeather.current.weather[0].description}</div>
+                        </div>
+                        <div style="display:flex;align-items:center">
+                            <i class="wi wi-day-cloudy weather-icon"></i>
+                            <div class="weather-temp">${mockWeather.current.temp}°F</div>
+                        </div>
+                    </div>
+                    <div class="weather-details">
+                        <div class="weather-detail"><i class="wi wi-humidity"></i> ${mockWeather.current.humidity}% humidity</div>
+                        <div class="weather-detail"><i class="wi wi-strong-wind"></i> ${mockWeather.current.wind_speed} mph wind</div>
+                    </div>
+                `;
+                messageArea.appendChild(weatherDiv);
+                messageArea.scrollTop = messageArea.scrollHeight;
+                
+                // Speak the weather
+                speak(`The weather in Hopkinsville today is ${mockWeather.current.weather[0].description} with a temperature of ${mockWeather.current.temp} degrees Fahrenheit. Would you like to know the forecast for the next two days?`);
+                
+                // Set flag to await follow-up response
+                awaitingWeatherFollowUp = true;
+                
+                // Add follow-up question
+                setTimeout(() => {
+                    addMessage('Would you like to know the forecast for the next two days?', 'assistant');
+                }, 1500);
+                
+            } catch (error) {
+                console.error('Error fetching weather:', error);
+                messageArea.removeChild(typing);
+                addMessage('Sorry, I couldn\'t retrieve the weather information right now. Please try again later.', 'assistant');
+                speak("Sorry, I couldn't retrieve the weather information right now. Please try again later.");
+            }
+        }
+
+        function handleWeatherFollowUp(response) {
+            if (response === 'yes') {
+                // Show extended forecast
+                const mockWeather = {
+                    daily: [
+                        {
+                            dt: Date.now() / 1000 + 86400,
+                            temp: { day: 75, night: 62 },
+                            weather: [{ description: 'Sunny', main: 'Clear', icon: '01d' }]
+                        },
+                        {
+                            dt: Date.now() / 1000 + 172800,
+                            temp: { day: 78, night: 65 },
+                            weather: [{ description: 'Scattered thunderstorms', main: 'Thunderstorm', icon: '11d' }]
+                        }
+                    ]
+                };
+                
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                const dayAfter = new Date();
+                dayAfter.setDate(dayAfter.getDate() + 2);
+                
+                const options = { weekday: 'long', month: 'short', day: 'numeric' };
+                
+                const forecastDiv = document.createElement('div');
+                forecastDiv.innerHTML = `
+                    <div class="weather-card" style="margin-top:15px;">
+                        <div style="font-weight:600;font-size:1.1rem;margin-bottom:10px;">Extended Forecast</div>
+                        
+                        <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
+                            <div style="font-weight:500;">${tomorrow.toLocaleDateString('en-US', options)}</div>
+                            <div style="display:flex;align-items:center;">
+                                <i class="wi wi-day-sunny weather-icon"></i>
+                                <div style="margin-left:10px;">${mockWeather.daily[0].temp.day}°F / ${mockWeather.daily[0].temp.night}°F</div>
+                            </div>
+                            <div>${mockWeather.daily[0].weather[0].description}</div>
+                        </div>
+                        
+                        <div style="display:flex;justify-content:space-between;">
+                            <div style="font-weight:500;">${dayAfter.toLocaleDateString('en-US', options)}</div>
+                            <div style="display:flex;align-items:center;">
+                                <i class="wi wi-thunderstorm weather-icon"></i>
+                                <div style="margin-left:10px;">${mockWeather.daily[1].temp.day}°F / ${mockWeather.daily[1].temp.night}°F</div>
+                            </div>
+                            <div>${mockWeather.daily[1].weather[0].description}</div>
+                        </div>
+                    </div>
+                `;
+                messageArea.appendChild(forecastDiv);
+                messageArea.scrollTop = messageArea.scrollHeight;
+                
+                // Speak the forecast
+                speak(`Tomorrow will be ${mockWeather.daily[0].weather[0].description} with highs of ${mockWeather.daily[0].temp.day} and lows of ${mockWeather.daily[0].temp.night} degrees. The next day will have ${mockWeather.daily[1].weather[0].description} with highs of ${mockWeather.daily[1].temp.day} and lows of ${mockWeather.daily[1].temp.night} degrees.`);
+                
+                // Reset flag
+                awaitingWeatherFollowUp = false;
+            } else if (response === 'no') {
+                addMessage('Okay, let me know if you need anything else!', 'assistant');
+                speak('Okay, let me know if you need anything else!');
+                awaitingWeatherFollowUp = false;
+            } else {
+                addMessage('I didn\'t understand your response. Please say "yes" or "no".', 'assistant');
+                speak('I didn\'t understand your response. Please say "yes" or "no".');
+            }
+        }
+
+        function handleTiredResponse() {
+            addMessage("Yes, but I won't be if you leave a positive review by scanning our review QR code!", 'assistant');
+            speak("Yes, but I won't be if you leave a positive review by scanning our review QR code!");
+            
+            // Show QR code
+            const qrDiv = document.createElement('div');
+            qrDiv.innerHTML = `
+                <div style="text-align:center;margin:15px 0;">
+                    <div class="qr-code">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://bestwestern.com/review" alt="Review QR Code">
+                    </div>
+                    <div style="font-size:0.9rem;margin-top:5px;">Scan to leave a review</div>
+                </div>
+                <div style="text-align:center;margin-bottom:15px;">
+                    <div>Let me know once you've scanned it!</div>
+                </div>
+            `;
+            messageArea.appendChild(qrDiv);
+            messageArea.scrollTop = messageArea.scrollHeight;
+            
+            awaitingReviewConfirmation = true;
+        }
+
+        function handleReviewConfirmation(response) {
+            if (response === 'review_done') {
+                addMessage("Thank you! My happiness level just went from 'sleepy' to 'energetic like a puppy with a new toy'!", 'assistant');
+                speak("Thank you! My happiness level just went from 'sleepy' to 'energetic like a puppy with a new toy'!");
+                awaitingReviewConfirmation = false;
+            } else {
+                addMessage("I didn't understand. Please let me know when you've scanned the QR code.", 'assistant');
+                speak("I didn't understand. Please let me know when you've scanned the QR code.");
+            }
+        }
+    </script>
+</body>
+</html>
