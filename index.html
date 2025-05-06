@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SHREE - Best Western Virtual Assistant</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.12/css/weather-icons.min.css">
     <style>
         :root {
             --primary: #003580;
@@ -14,6 +15,8 @@
             --light: #f8f9fa;
             --dark: #2c3e50;
             --white: #ffffff;
+            --weather-blue: #4a90e2;
+            --weather-yellow: #f5a623;
         }
         
         * {
@@ -59,14 +62,20 @@
             height: 120px;
             border-radius: 50%;
             object-fit: cover;
-            border: 4px solid rgba(255,255,255,0.2);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            border: 4px solid rgba(255,255,255,0.3);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
             margin: 0 auto 15px;
             background: #fff;
             display: flex;
             justify-content: center;
             align-items: center;
             overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .avatar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
         }
         
         .avatar img {
@@ -110,12 +119,14 @@
             margin-bottom: 5px;
             color: white;
             font-weight: 500;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
         
         .subtitle {
             font-size: 0.9rem;
             opacity: 0.9;
-            color: rgba(255,255,255,0.8);
+            color: rgba(255,255,255,0.9);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
         }
         
         .message-area {
@@ -124,6 +135,7 @@
             overflow-y: auto;
             display: flex;
             flex-direction: column;
+            background: linear-gradient(to bottom, #f9fafc, #f1f5f9);
         }
         
         .message {
@@ -134,6 +146,13 @@
             font-size: 0.95rem;
             line-height: 1.4;
             position: relative;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .message:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         
         .assistant-message {
@@ -141,6 +160,7 @@
             align-self: flex-start;
             border-bottom-left-radius: 5px;
             color: var(--dark);
+            border: 1px solid rgba(0,0,0,0.05);
         }
         
         .user-message {
@@ -148,18 +168,24 @@
             color: white;
             align-self: flex-end;
             border-bottom-right-radius: 5px;
+            border: 1px solid rgba(255,255,255,0.1);
         }
         
         .action-area {
             padding: 15px 20px;
-            border-top: 1px solid #eee;
+            border-top: 1px solid rgba(0,0,0,0.05);
             background: var(--white);
             flex-shrink: 0;
             text-align: center;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
         }
         
         .btn {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             background-color: var(--secondary);
             color: var(--dark);
             border: none;
@@ -170,7 +196,7 @@
             transition: all 0.3s;
             font-weight: 500;
             box-shadow: 0 4px 10px rgba(255, 182, 6, 0.3);
-            margin: 0 5px;
+            min-width: 100px;
         }
         
         .btn:hover {
@@ -241,10 +267,64 @@
             font-size: 0.8rem;
             cursor: pointer;
             transition: all 0.2s;
+            border: 1px solid rgba(0, 53, 128, 0.1);
         }
         
         .suggestion-chip:hover {
             background: rgba(0, 53, 128, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .weather-card {
+            background: linear-gradient(135deg, var(--weather-blue), #6bb9f0);
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            margin: 10px 0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .weather-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .weather-icon {
+            font-size: 2rem;
+            margin-right: 10px;
+        }
+        
+        .weather-temp {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+        
+        .weather-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        
+        .weather-detail {
+            display: flex;
+            align-items: center;
+        }
+        
+        .weather-detail i {
+            margin-right: 5px;
+        }
+        
+        .date-display {
+            background: linear-gradient(135deg, var(--secondary), #ffcc33);
+            color: var(--dark);
+            padding: 10px 15px;
+            border-radius: 12px;
+            margin: 10px 0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            font-weight: 500;
         }
         
         .modal {
@@ -267,6 +347,12 @@
             width: 90%;
             max-width: 400px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            animation: modalFadeIn 0.3s ease-out;
+        }
+        
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .modal-title {
@@ -303,7 +389,7 @@
     <div class="assistant-container">
         <div class="avatar-container">
             <div class="avatar">
-                <img src="https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/images/ai_avatar.png" alt="SHREE Virtual Assistant">
+                <img src="https://github.com/Bestwesten/Shree/raw/12c311ea8a13889266e00b6ed280826ea8b277e8/images/ai_avatar.png" alt="SHREE Virtual Assistant">
             </div>
             <h1>SHREE Virtual Assistant</h1>
             <p class="subtitle">Always listening, ready to help</p>
@@ -315,20 +401,18 @@
         
         <div class="message-area" id="messageArea">
             <div class="assistant-message message">
-                Hello! I'm SHREE, your always-on virtual assistant. You can talk to me anytime about:
+                Hello! I'm RITU, your virtual assistant at Best Western Hopkinsville. I'm happy to serve you! 
+                Ask me anything about our beautiful hotel or the local area.
             </div>
             <div class="suggestions">
                 <div class="suggestion-chip" data-key="welcome">Welcome</div>
                 <div class="suggestion-chip" data-key="breakfast">Breakfast</div>
                 <div class="suggestion-chip" data-key="amenities">Amenities</div>
                 <div class="suggestion-chip" data-key="wifi">Wi-Fi Help</div>
-                <div class="suggestion-chip" data-key="pool">Pool Hours</div>
+                <div class="suggestion-chip" data-key="weather">Weather</div>
+                <div class="suggestion-chip" data-key="date">Today's Date</div>
                 <div class="suggestion-chip" data-key="services">Services</div>
                 <div class="suggestion-chip" data-key="gym">Gym/Fitness</div>
-                <div class="suggestion-chip" data-key="emergency">Emergency</div>
-                <div class="suggestion-chip" data-key="policies">Policies</div>
-                <div class="suggestion-chip" data-key="manager">Manager</div>
-                <div class="suggestion-chip" data-key="review">Review</div>
                 <div class="suggestion-chip" data-key="joke">Tell a Joke</div>
             </div>
         </div>
@@ -387,6 +471,9 @@
             'hola': 'welcome',
             'hiya': 'welcome',
             'greetings': 'welcome',
+            'your name': 'welcome',
+            'who are you': 'welcome',
+            'introduce yourself': 'welcome',
             
             // Breakfast commands
             'breakfast': 'breakfast',
@@ -561,6 +648,31 @@
             'compliment': 'review',
             'complaints': 'review',
             
+            // Weather commands
+            'weather': 'weather',
+            'forecast': 'weather',
+            'temperature': 'weather',
+            'how hot': 'weather',
+            'how cold': 'weather',
+            'weather today': 'weather',
+            'weather report': 'weather',
+            'outside': 'weather',
+            'climate': 'weather',
+            'humidity': 'weather',
+            'rain': 'weather',
+            'sunny': 'weather',
+            'cloudy': 'weather',
+            
+            // Date commands
+            'date': 'date',
+            'today': 'date',
+            'what day': 'date',
+            'current date': 'date',
+            'day today': 'date',
+            'what\'s today': 'date',
+            'today\'s date': 'date',
+            'calendar': 'date',
+            
             // Joke commands
             'joke': 'joke',
             'tell me a joke': 'joke',
@@ -627,6 +739,10 @@
                     const key = this.getAttribute('data-key');
                     if (key === 'joke') {
                         tellJoke();
+                    } else if (key === 'weather') {
+                        getWeather();
+                    } else if (key === 'date') {
+                        showCurrentDate();
                     } else {
                         playAudio(key);
                     }
@@ -646,6 +762,11 @@
             
             // Start microphone immediately
             startMicrophone();
+            
+            // Initial greeting
+            setTimeout(() => {
+                speak("Hello! I'm RITU, your virtual assistant at Best Western Hopkinsville. How may I assist you today?");
+            }, 1000);
         });
 
         function startMicrophone() {
@@ -725,6 +846,10 @@
                         promptForMessage();
                     } else if (matchedKey === 'joke') {
                         tellJoke();
+                    } else if (matchedKey === 'weather') {
+                        getWeather();
+                    } else if (matchedKey === 'date') {
+                        showCurrentDate();
                     } else if (matchedKey) {
                         playAudio(matchedKey);
                     } else {
@@ -820,6 +945,12 @@
             
             const audioFile = audioMap[key];
             if (!audioFile) {
+                // Handle special cases
+                if (key === 'welcome') {
+                    speak("I am RITU, your virtual assistant. I'm happy to serve you at our beautiful Best Western hotel. Please ask me anything related to your stay!");
+                    addMessage("I am RITU, your virtual assistant. I'm happy to serve you at our beautiful Best Western hotel. Please ask me anything related to your stay!", 'assistant');
+                    return;
+                }
                 addMessage('Command not recognized', 'assistant');
                 return;
             }
@@ -871,7 +1002,7 @@
 
         function getAudioDescription(key) {
             const descriptions = {
-                'welcome': 'Welcome to Best Western Hopkinsville! I\'m SHREE, your virtual assistant.',
+                'welcome': "I am RITU, your virtual assistant. I'm happy to serve you at our beautiful Best Western hotel. Please ask me anything related to your stay!",
                 'breakfast': 'Our complimentary breakfast is served daily from 6:30 to 9:30 AM in the main lobby area.',
                 'elevator': 'Elevators are located in the middle of hallways and near side entrances for your convenience.',
                 'amenities': 'Your stay includes access to our outdoor pool, fitness center, and free WiFi.',
@@ -889,6 +1020,15 @@
                 'help': 'I can help with: breakfast hours, amenities, WiFi, pool information, services, and more!'
             };
             return descriptions[key] || 'Here\'s information about that';
+        }
+
+        function speak(text) {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = 0.9;
+                utterance.pitch = 1.1;
+                speechSynthesis.speak(utterance);
+            }
         }
 
         function promptForMessage() {
@@ -931,20 +1071,104 @@
                     addMessage('Here\'s a joke for you:', 'assistant');
                     
                     // Use the SpeechSynthesis API to read the joke aloud
-                    if ('speechSynthesis' in window) {
-                        const utterance = new SpeechSynthesisUtterance(data.joke);
-                        utterance.rate = 0.9;
-                        speechSynthesis.speak(utterance);
-                    }
+                    speak(data.joke);
                     
                     addMessage(data.joke, 'assistant');
                 } else {
                     addMessage('I couldn\'t think of a good joke right now. Maybe try again later!', 'assistant');
+                    speak("I couldn't think of a good joke right now. Maybe ask me again later!");
                 }
             } catch (error) {
                 console.error('Error fetching joke:', error);
                 messageArea.removeChild(typing);
                 addMessage('I tried to tell a joke but something went wrong. Maybe ask me again later!', 'assistant');
+                speak("I tried to tell a joke but something went wrong. Maybe ask me again later!");
+            }
+        }
+
+        function showCurrentDate() {
+            if (isMuted) return;
+            
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const dateString = now.toLocaleDateString('en-US', options);
+            
+            const dateDiv = document.createElement('div');
+            dateDiv.classList.add('date-display');
+            dateDiv.textContent = `Today is ${dateString}`;
+            messageArea.appendChild(dateDiv);
+            messageArea.scrollTop = messageArea.scrollHeight;
+            
+            speak(`Today is ${dateString}`);
+        }
+
+        async function getWeather() {
+            if (isMuted) return;
+            
+            const typing = showTyping();
+            
+            try {
+                // For demo purposes, we'll use mock data
+                // In a real implementation, you would use a weather API like OpenWeatherMap
+                const mockWeather = {
+                    current: {
+                        temp: 72,
+                        feels_like: 74,
+                        humidity: 65,
+                        wind_speed: 8,
+                        weather: [{ description: 'Partly cloudy', main: 'Clouds', icon: '03d' }]
+                    },
+                    daily: [
+                        {
+                            dt: Date.now() / 1000 + 86400,
+                            temp: { day: 75, night: 62 },
+                            weather: [{ description: 'Sunny', main: 'Clear', icon: '01d' }]
+                        },
+                        {
+                            dt: Date.now() / 1000 + 172800,
+                            temp: { day: 78, night: 65 },
+                            weather: [{ description: 'Scattered thunderstorms', main: 'Thunderstorm', icon: '11d' }]
+                        }
+                    ]
+                };
+                
+                messageArea.removeChild(typing);
+                
+                // Display today's weather
+                const weatherDiv = document.createElement('div');
+                weatherDiv.classList.add('weather-card');
+                weatherDiv.innerHTML = `
+                    <div class="weather-header">
+                        <div>
+                            <div style="font-weight:600;font-size:1.1rem">Weather in Hopkinsville, KY</div>
+                            <div style="font-size:0.9rem;opacity:0.9">${mockWeather.current.weather[0].description}</div>
+                        </div>
+                        <div style="display:flex;align-items:center">
+                            <i class="wi wi-day-cloudy weather-icon"></i>
+                            <div class="weather-temp">${mockWeather.current.temp}°F</div>
+                        </div>
+                    </div>
+                    <div class="weather-details">
+                        <div class="weather-detail"><i class="wi wi-humidity"></i> ${mockWeather.current.humidity}% humidity</div>
+                        <div class="weather-detail"><i class="wi wi-strong-wind"></i> ${mockWeather.current.wind_speed} mph wind</div>
+                    </div>
+                `;
+                messageArea.appendChild(weatherDiv);
+                messageArea.scrollTop = messageArea.scrollHeight;
+                
+                // Speak the weather
+                speak(`The weather in Hopkinsville today is ${mockWeather.current.weather[0].description} with a temperature of ${mockWeather.current.temp} degrees Fahrenheit. Would you like to know the forecast for the next two days?`);
+                
+                // Add follow-up question
+                setTimeout(() => {
+                    addMessage('Would you like to know the forecast for the next two days?', 'assistant');
+                }, 1500);
+                
+            } catch (error) {
+                console.error('Error fetching weather:', error);
+                messageArea.removeChild(typing);
+                addMessage('Sorry, I couldn\'t retrieve the weather information right now. Please try again later.', 'assistant');
+                speak("Sorry, I couldn't retrieve the weather information right now. Please try again later.");
             }
         }
     </script>
