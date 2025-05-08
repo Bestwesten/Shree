@@ -1428,12 +1428,12 @@
             qrDiv.innerHTML = `
                 <div style="text-align:center;margin:15px 0;">
                     <div class="qr-code">
-                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://bestwestern.com/review" alt="Review QR Code">
+                        <img src="https://github.com/Bestwesten/Shree/blob/7581d66af9c1b4995f5d30af07e44acfe9578e18/images/Google.png" alt="Review QR Code">
                     </div>
                     <div style="font-size:0.9rem;margin-top:5px;">Scan to leave a review</div>
                 </div>
                 <div style="text-align:center;margin-bottom:15px;">
-                    <div>Let me know once you've scanned it!</div>
+                    <div>Let me know once you've scanned it by saying "done", "ok", or similar!</div>
                 </div>
             `;
             messageArea.appendChild(qrDiv);
@@ -1448,8 +1448,8 @@
                 speak("Thank you! My happiness level just went from 'sleepy' to 'energetic like a puppy with a new toy'!");
                 awaitingReviewConfirmation = false;
             } else {
-                addMessage("I didn't understand. Please let me know when you've scanned the QR code.", 'assistant');
-                speak("I didn't understand. Please let me know when you've scanned the QR code.");
+                addMessage("I didn't understand. Please let me know when you've scanned the QR code by saying 'done', 'ok', or similar.", 'assistant');
+                speak("I didn't understand. Please let me know when you've scanned the QR code by saying 'done', 'ok', or similar.");
             }
         }
     </script>
