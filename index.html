@@ -502,17 +502,18 @@
             'checkin': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/checkin.mp3',
             'housekeeping': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/housekeeping.mp3',
             'parking': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/parking.mp3',
-            'gym': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/gym.mp3',
+            'gym': 'https://github.com/Bestwesten/Shree/raw/main/audio/gym.mp3',
             'emergency': 'https://github.com/Bestwesten/Shree/raw/f5948c7a3cf649ebca2c67de33687a6979b0c3e0/audio/emergency.mp3',
             'policies': 'https://github.com/Bestwesten/Shree/raw/f5948c7a3cf649ebca2c67de33687a6979b0c3e0/audio/policies.mp3',
             'manager': 'https://github.com/Bestwesten/Shree/raw/0c5746f6d33fd0a0270f4fcef5f5917188407375/audio/Manager_Contact.mp3',
             'review': 'https://github.com/Bestwesten/Shree/raw/0c5746f6d33fd0a0270f4fcef5f5917188407375/audio/Review.mp3',
-            'name': 'https://github.com/Bestwesten/Shree/blob/4e0b3ef612c2791661880331d73819422d1d02e6/audio/Name.mp3',
+            'name': 'https://github.com/Bestwesten/Shree/raw/4e0b3ef612c2791661880331d73819422d1d02e6/audio/Name.mp3',
             'help': [
                 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/welcome.mp3',
                 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/amenities.mp3',
                 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/services.mp3'
-            ]
+            ],
+            'unknown': 'https://github.com/Bestwesten/Shree/raw/main/audio/unknown.mp3'
         };
 
         // Enhanced command mapping with similar sounding words and common names
@@ -1000,17 +1001,19 @@
                         showCurrentDate();
                     } else if (matchedKey === 'name') {
                         playAudio('name');
-                        addMessage('I am RITU, your virtual assistant', 'assistant');
                     } else if (awaitingWeatherFollowUp) {
                         handleWeatherFollowUp(matchedKey);
                     } else if (awaitingReviewConfirmation) {
                         handleReviewConfirmation(matchedKey);
                     } else if (matchedKey === 'tired') {
                         handleTiredResponse();
+                    } else if (matchedKey === 'review') {
+                        handleReviewRequest();
                     } else if (matchedKey) {
                         playAudio(matchedKey);
                     } else {
-                        addMessage('Try saying "help" for options', 'assistant');
+                        playAudio('unknown');
+                        addMessage("I'm sorry, I can't answer that. Please ask the front desk about it or ask me something I know about this hotel.", 'assistant');
                     }
                 };
 
@@ -1169,13 +1172,14 @@
                 'checkin': 'Check-in time is 3 PM. Early arrivals are welcome if rooms are available.',
                 'housekeeping': 'Daily service runs from 9 AM to 3 PM. For immediate needs, hang the "Service Please" tag.',
                 'parking': 'Complimentary parking is available for guests. Oversized vehicles should park in designated areas.',
-                'gym': 'Our 24-hour fitness center is located on the first floor near the elevators. Equipment includes treadmills and free weights.',
+                'gym': 'Our 24-hour fitness center is available for all guests and is located near the lobby. It features cardio machines, free weights, and towels for your convenience. Please use your room key for access and remember to wipe down equipment after use. For any assistance, contact the front desk.',
                 'emergency': 'For emergencies, dial 911 immediately. For hotel emergencies, dial 0 from your room phone or contact the front desk.',
                 'policies': 'Our hotel policies include a no-smoking policy in all rooms, quiet hours from 10 PM to 7 AM, and a check-out time of 11 AM.',
                 'manager': 'The manager on duty can be contacted at the front desk 24/7 for any special requests or concerns.',
-                'review': 'We appreciate your feedback! Please consider leaving us a review on your preferred travel platform.',
+                'review': 'We appreciate your feedback! Please consider leaving us a review.',
                 'help': 'I can help with: breakfast hours, amenities, WiFi, pool information, services, and more!',
-                'name': 'I am RITU, your virtual assistant at Best Western Hopkinsville. How may I assist you today?'
+                'name': 'I am RITU, your virtual assistant at Best Western Hopkinsville. How may I assist you today?',
+                'unknown': "I'm sorry, I can't answer that. Please ask the front desk about it or ask me something I know about this hotel."
             };
             return descriptions[key] || 'Here\'s information about that';
         }
@@ -1428,7 +1432,7 @@
             qrDiv.innerHTML = `
                 <div style="text-align:center;margin:15px 0;">
                     <div class="qr-code">
-                        <img src="https://github.com/Bestwesten/Shree/blob/7581d66af9c1b4995f5d30af07e44acfe9578e18/images/Google.png" alt="Review QR Code">
+                        <img src="https://github.com/Bestwesten/Shree/blob/b38f8960014867e7d8a7435a530674857e951c9c/images/Google.png" alt="Review QR Code">
                     </div>
                     <div style="font-size:0.9rem;margin-top:5px;">Scan to leave a review</div>
                 </div>
@@ -1440,6 +1444,26 @@
             messageArea.scrollTop = messageArea.scrollHeight;
             
             awaitingReviewConfirmation = true;
+        }
+
+        function handleReviewRequest() {
+            playAudio('review');
+            
+            // Show QR code
+            const qrDiv = document.createElement('div');
+            qrDiv.innerHTML = `
+                <div style="text-align:center;margin:15px 0;">
+                    <div class="qr-code">
+                        <img src="https://github.com/Bestwesten/Shree/blob/b38f8960014867e7d8a7435a530674857e951c9c/images/Google.png" alt="Review QR Code">
+                    </div>
+                    <div style="font-size:0.9rem;margin-top:5px;">Scan to leave a review</div>
+                </div>
+                <div style="text-align:center;margin-bottom:15px;">
+                    <div>We appreciate your feedback! Let us know how we're doing.</div>
+                </div>
+            `;
+            messageArea.appendChild(qrDiv);
+            messageArea.scrollTop = messageArea.scrollHeight;
         }
 
         function handleReviewConfirmation(response) {
