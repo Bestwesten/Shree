@@ -527,10 +527,10 @@
             'hola': 'welcome',
             'hiya': 'welcome',
             'greetings': 'welcome',
-            'how are you': 'tired',
-            'how you doing': 'tired',
-            'how\'s it going': 'tired',
-            'how do you feel': 'tired',
+            'how are you': 'how_are_you',
+            'how you doing': 'how_are_you',
+            'how\'s it going': 'how_are_you',
+            'how do you feel': 'how_are_you',
             'your name': 'name',
             'who are you': 'name',
             'introduce yourself': 'name',
@@ -828,7 +828,6 @@
         let currentAudio = null;
         let recognition = null;
         let isMuted = false;
-        let awaitingWeatherFollowUp = false;
         let awaitingReviewConfirmation = false;
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         const managementPhoneNumber = '5134036508';
@@ -1001,19 +1000,16 @@
                         showCurrentDate();
                     } else if (matchedKey === 'name') {
                         playAudio('name');
-                    } else if (awaitingWeatherFollowUp) {
-                        handleWeatherFollowUp(matchedKey);
+                    } else if (matchedKey === 'how_are_you') {
+                        handleHowAreYou();
                     } else if (awaitingReviewConfirmation) {
                         handleReviewConfirmation(matchedKey);
-                    } else if (matchedKey === 'tired') {
-                        handleTiredResponse();
                     } else if (matchedKey === 'review') {
                         handleReviewRequest();
                     } else if (matchedKey) {
                         playAudio(matchedKey);
                     } else {
-                        playAudio('unknown');
-                        addMessage("I'm sorry, I can't answer that. Please ask the front desk about it or ask me something I know about this hotel.", 'assistant');
+                        handleUnknownCommand();
                     }
                 };
 
@@ -1179,7 +1175,7 @@
                 'review': 'We appreciate your feedback! Please consider leaving us a review.',
                 'help': 'I can help with: breakfast hours, amenities, WiFi, pool information, services, and more!',
                 'name': 'I am RITU, your virtual assistant at Best Western Hopkinsville. How may I assist you today?',
-                'unknown': "I'm sorry, I can't answer that. Please ask the front desk about it or ask me something I know about this hotel."
+                'unknown': "I can only answer about hotel and what my creator has taught me so far. Sorry! Ask me something related to hotel. Thank you!"
             };
             return descriptions[key] || 'Here\'s information about that';
         }
@@ -1309,44 +1305,55 @@
                             dt: Date.now() / 1000 + 172800,
                             temp: { day: 78, night: 65 },
                             weather: [{ description: 'Scattered thunderstorms', main: 'Thunderstorm', icon: '11d' }]
+                        },
+                        {
+                            dt: Date.now() / 1000 + 259200,
+                            temp: { day: 80, night: 68 },
+                            weather: [{ description: 'Mostly sunny', main: 'Clear', icon: '01d' }]
                         }
                     ]
                 };
                 
                 messageArea.removeChild(typing);
                 
-                // Display today's weather
+                // Display 3-day forecast
                 const weatherDiv = document.createElement('div');
                 weatherDiv.classList.add('weather-card');
                 weatherDiv.innerHTML = `
-                    <div class="weather-header">
-                        <div>
-                            <div style="font-weight:600;font-size:1.1rem">Weather in Hopkinsville, KY</div>
-                            <div style="font-size:0.9rem;opacity:0.9">${mockWeather.current.weather[0].description}</div>
-                        </div>
-                        <div style="display:flex;align-items:center">
+                    <div style="font-weight:600;font-size:1.1rem;margin-bottom:15px;">3-Day Weather Forecast for Hopkinsville, KY</div>
+                    
+                    <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
+                        <div style="font-weight:500;">Today</div>
+                        <div style="display:flex;align-items:center;">
                             <i class="wi wi-day-cloudy weather-icon"></i>
-                            <div class="weather-temp">${mockWeather.current.temp}°F</div>
+                            <div style="margin-left:10px;">${mockWeather.current.temp}°F</div>
                         </div>
+                        <div>${mockWeather.current.weather[0].description}</div>
                     </div>
-                    <div class="weather-details">
-                        <div class="weather-detail"><i class="wi wi-humidity"></i> ${mockWeather.current.humidity}% humidity</div>
-                        <div class="weather-detail"><i class="wi wi-strong-wind"></i> ${mockWeather.current.wind_speed} mph wind</div>
+                    
+                    <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
+                        <div style="font-weight:500;">Tomorrow</div>
+                        <div style="display:flex;align-items:center;">
+                            <i class="wi wi-day-sunny weather-icon"></i>
+                            <div style="margin-left:10px;">${mockWeather.daily[0].temp.day}°F / ${mockWeather.daily[0].temp.night}°F</div>
+                        </div>
+                        <div>${mockWeather.daily[0].weather[0].description}</div>
+                    </div>
+                    
+                    <div style="display:flex;justify-content:space-between;">
+                        <div style="font-weight:500;">Day After</div>
+                        <div style="display:flex;align-items:center;">
+                            <i class="wi wi-thunderstorm weather-icon"></i>
+                            <div style="margin-left:10px;">${mockWeather.daily[1].temp.day}°F / ${mockWeather.daily[1].temp.night}°F</div>
+                        </div>
+                        <div>${mockWeather.daily[1].weather[0].description}</div>
                     </div>
                 `;
                 messageArea.appendChild(weatherDiv);
                 messageArea.scrollTop = messageArea.scrollHeight;
                 
-                // Speak the weather
-                speak(`The weather in Hopkinsville today is ${mockWeather.current.weather[0].description} with a temperature of ${mockWeather.current.temp} degrees Fahrenheit. Would you like to know the forecast for the next two days?`);
-                
-                // Set flag to await follow-up response
-                awaitingWeatherFollowUp = true;
-                
-                // Add follow-up question
-                setTimeout(() => {
-                    addMessage('Would you like to know the forecast for the next two days?', 'assistant');
-                }, 1500);
+                // Speak the weather forecast
+                speak(`The weather forecast for Hopkinsville: Today will be ${mockWeather.current.weather[0].description} with a high of ${mockWeather.current.temp} degrees. Tomorrow expect ${mockWeather.daily[0].weather[0].description} with highs of ${mockWeather.daily[0].temp.day} and lows of ${mockWeather.daily[0].temp.night} degrees. The day after will have ${mockWeather.daily[1].weather[0].description} with highs of ${mockWeather.daily[1].temp.day} and lows of ${mockWeather.daily[1].temp.night} degrees.`);
                 
             } catch (error) {
                 console.error('Error fetching weather:', error);
@@ -1356,88 +1363,23 @@
             }
         }
 
-        function handleWeatherFollowUp(response) {
-            if (response === 'yes') {
-                // Show extended forecast
-                const mockWeather = {
-                    daily: [
-                        {
-                            dt: Date.now() / 1000 + 86400,
-                            temp: { day: 75, night: 62 },
-                            weather: [{ description: 'Sunny', main: 'Clear', icon: '01d' }]
-                        },
-                        {
-                            dt: Date.now() / 1000 + 172800,
-                            temp: { day: 78, night: 65 },
-                            weather: [{ description: 'Scattered thunderstorms', main: 'Thunderstorm', icon: '11d' }]
-                        }
-                    ]
-                };
-                
-                const tomorrow = new Date();
-                tomorrow.setDate(tomorrow.getDate() + 1);
-                const dayAfter = new Date();
-                dayAfter.setDate(dayAfter.getDate() + 2);
-                
-                const options = { weekday: 'long', month: 'short', day: 'numeric' };
-                
-                const forecastDiv = document.createElement('div');
-                forecastDiv.innerHTML = `
-                    <div class="weather-card" style="margin-top:15px;">
-                        <div style="font-weight:600;font-size:1.1rem;margin-bottom:10px;">Extended Forecast</div>
-                        
-                        <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
-                            <div style="font-weight:500;">${tomorrow.toLocaleDateString('en-US', options)}</div>
-                            <div style="display:flex;align-items:center;">
-                                <i class="wi wi-day-sunny weather-icon"></i>
-                                <div style="margin-left:10px;">${mockWeather.daily[0].temp.day}°F / ${mockWeather.daily[0].temp.night}°F</div>
-                            </div>
-                            <div>${mockWeather.daily[0].weather[0].description}</div>
-                        </div>
-                        
-                        <div style="display:flex;justify-content:space-between;">
-                            <div style="font-weight:500;">${dayAfter.toLocaleDateString('en-US', options)}</div>
-                            <div style="display:flex;align-items:center;">
-                                <i class="wi wi-thunderstorm weather-icon"></i>
-                                <div style="margin-left:10px;">${mockWeather.daily[1].temp.day}°F / ${mockWeather.daily[1].temp.night}°F</div>
-                            </div>
-                            <div>${mockWeather.daily[1].weather[0].description}</div>
-                        </div>
-                    </div>
-                `;
-                messageArea.appendChild(forecastDiv);
-                messageArea.scrollTop = messageArea.scrollHeight;
-                
-                // Speak the forecast
-                speak(`Tomorrow will be ${mockWeather.daily[0].weather[0].description} with highs of ${mockWeather.daily[0].temp.day} and lows of ${mockWeather.daily[0].temp.night} degrees. The next day will have ${mockWeather.daily[1].weather[0].description} with highs of ${mockWeather.daily[1].temp.day} and lows of ${mockWeather.daily[1].temp.night} degrees.`);
-                
-                // Reset flag
-                awaitingWeatherFollowUp = false;
-            } else if (response === 'no') {
-                addMessage('Okay, let me know if you need anything else!', 'assistant');
-                speak('Okay, let me know if you need anything else!');
-                awaitingWeatherFollowUp = false;
-            } else {
-                addMessage('I didn\'t understand your response. Please say "yes" or "no".', 'assistant');
-                speak('I didn\'t understand your response. Please say "yes" or "no".');
-            }
-        }
-
-        function handleTiredResponse() {
-            addMessage("Yes, but I won't be if you leave a positive review by scanning our review QR code!", 'assistant');
-            speak("Yes, but I won't be if you leave a positive review by scanning our review QR code!");
+        function handleHowAreYou() {
+            const response = "How are you? I'm doing great — thank you for asking! You can make my day even better by scanning the QR code and leaving a 5-star rating. Your feedback means a lot and helps us serve you better at Best Western!";
+            
+            speak(response);
+            addMessage(response, 'assistant');
             
             // Show QR code
             const qrDiv = document.createElement('div');
             qrDiv.innerHTML = `
                 <div style="text-align:center;margin:15px 0;">
                     <div class="qr-code">
-                        <img src="https://github.com/Bestwesten/Shree/blob/b38f8960014867e7d8a7435a530674857e951c9c/images/Google.png" alt="Review QR Code">
+                        <img src="https://github.com/Bestwesten/Shree/blob/6e528d1743038cca02230d99cb87e4c61c3dc6f5/images/Google.png" alt="Review QR Code">
                     </div>
                     <div style="font-size:0.9rem;margin-top:5px;">Scan to leave a review</div>
                 </div>
                 <div style="text-align:center;margin-bottom:15px;">
-                    <div>Let me know once you've scanned it by saying "done", "ok", or similar!</div>
+                    <div>Have you finished scanning the QR code?</div>
                 </div>
             `;
             messageArea.appendChild(qrDiv);
@@ -1454,27 +1396,39 @@
             qrDiv.innerHTML = `
                 <div style="text-align:center;margin:15px 0;">
                     <div class="qr-code">
-                        <img src="https://github.com/Bestwesten/Shree/blob/b38f8960014867e7d8a7435a530674857e951c9c/images/Google.png" alt="Review QR Code">
+                        <img src="https://github.com/Bestwesten/Shree/blob/6e528d1743038cca02230d99cb87e4c61c3dc6f5/images/Google.png" alt="Review QR Code">
                     </div>
                     <div style="font-size:0.9rem;margin-top:5px;">Scan to leave a review</div>
                 </div>
                 <div style="text-align:center;margin-bottom:15px;">
-                    <div>We appreciate your feedback! Let us know how we're doing.</div>
+                    <div>Have you finished scanning the QR code?</div>
                 </div>
             `;
             messageArea.appendChild(qrDiv);
             messageArea.scrollTop = messageArea.scrollHeight;
+            
+            awaitingReviewConfirmation = true;
         }
 
         function handleReviewConfirmation(response) {
-            if (response === 'review_done') {
-                addMessage("Thank you! My happiness level just went from 'sleepy' to 'energetic like a puppy with a new toy'!", 'assistant');
-                speak("Thank you! My happiness level just went from 'sleepy' to 'energetic like a puppy with a new toy'!");
+            if (response === 'yes' || response === 'review_done') {
+                addMessage("Thank you for your feedback! We truly appreciate it.", 'assistant');
+                speak("Thank you for your feedback! We truly appreciate it.");
+                awaitingReviewConfirmation = false;
+            } else if (response === 'no') {
+                addMessage("We'll try to improve our service. Please let us know how we can do better.", 'assistant');
+                speak("We'll try to improve our service. Please let us know how we can do better.");
                 awaitingReviewConfirmation = false;
             } else {
-                addMessage("I didn't understand. Please let me know when you've scanned the QR code by saying 'done', 'ok', or similar.", 'assistant');
-                speak("I didn't understand. Please let me know when you've scanned the QR code by saying 'done', 'ok', or similar.");
+                addMessage("I didn't understand. Please let me know if you've finished scanning the QR code by saying 'yes' or 'no'.", 'assistant');
+                speak("I didn't understand. Please let me know if you've finished scanning the QR code by saying 'yes' or 'no'.");
             }
+        }
+
+        function handleUnknownCommand() {
+            const response = "I can only answer about hotel and what my creator has taught me so far. Sorry! Ask me something related to hotel. Thank you!";
+            speak(response);
+            addMessage(response, 'assistant');
         }
     </script>
 </body>
