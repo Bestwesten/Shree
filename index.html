@@ -400,8 +400,8 @@
         }
         
         .qr-code {
-            width: 150px;
-            height: 150px;
+            width: 200px;
+            height: 200px;
             margin: 10px auto;
             background: white;
             padding: 10px;
@@ -413,8 +413,9 @@
         }
         
         .qr-code img {
-            max-width: 100%;
-            max-height: 100%;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
         
         @media (max-width: 480px) {
@@ -427,6 +428,11 @@
             .header-info {
                 font-size: 0.7rem;
                 padding: 8px 10px;
+            }
+            
+            .qr-code {
+                width: 150px;
+                height: 150px;
             }
         }
     </style>
@@ -508,6 +514,7 @@
             'manager': 'https://github.com/Bestwesten/Shree/raw/0c5746f6d33fd0a0270f4fcef5f5917188407375/audio/Manager_Contact.mp3',
             'review': 'https://github.com/Bestwesten/Shree/raw/0c5746f6d33fd0a0270f4fcef5f5917188407375/audio/Review.mp3',
             'name': 'https://github.com/Bestwesten/Shree/raw/4e0b3ef612c2791661880331d73819422d1d02e6/audio/Name.mp3',
+            'restaurant': 'https://github.com/Bestwesten/Shree/raw/c1b0fb810b2d5bcbe1ebe5b43e9d3e5276945094/audio/Restaurant_Recommendations.mp3',
             'help': [
                 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/welcome.mp3',
                 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/amenities.mp3',
@@ -737,6 +744,22 @@
             'what\'s today': 'date',
             'today\'s date': 'date',
             'calendar': 'date',
+            
+            // Restaurant commands
+            'restaurant': 'restaurant',
+            'food': 'restaurant',
+            'dining': 'restaurant',
+            'eat': 'restaurant',
+            'dinner': 'restaurant',
+            'lunch': 'restaurant',
+            'breakfast': 'restaurant',
+            'meal': 'restaurant',
+            'where to eat': 'restaurant',
+            'recommend restaurant': 'restaurant',
+            'good places to eat': 'restaurant',
+            'local food': 'restaurant',
+            'nearby restaurants': 'restaurant',
+            'best food': 'restaurant',
             
             // Joke commands
             'joke': 'joke',
@@ -1002,6 +1025,8 @@
                         playAudio('name');
                     } else if (matchedKey === 'how_are_you') {
                         handleHowAreYou();
+                    } else if (matchedKey === 'restaurant') {
+                        playAudio('restaurant');
                     } else if (awaitingReviewConfirmation) {
                         handleReviewConfirmation(matchedKey);
                     } else if (matchedKey === 'review') {
@@ -1092,6 +1117,7 @@
                 }
                 currentAudio = null;
             }
+            speechSynthesis.cancel();
         }
 
         function playAudio(key) {
@@ -1173,6 +1199,7 @@
                 'policies': 'Our hotel policies include a no-smoking policy in all rooms, quiet hours from 10 PM to 7 AM, and a check-out time of 11 AM.',
                 'manager': 'The manager on duty can be contacted at the front desk 24/7 for any special requests or concerns.',
                 'review': 'We appreciate your feedback! Please consider leaving us a review.',
+                'restaurant': 'Here are some excellent restaurant recommendations in our area...',
                 'help': 'I can help with: breakfast hours, amenities, WiFi, pool information, services, and more!',
                 'name': 'I am RITU, your virtual assistant at Best Western Hopkinsville. How may I assist you today?',
                 'unknown': "I can only answer about hotel and what my creator has taught me so far. Sorry! Ask me something related to hotel. Thank you!"
@@ -1182,6 +1209,9 @@
 
         function speak(text) {
             if ('speechSynthesis' in window) {
+                // Cancel any ongoing speech
+                speechSynthesis.cancel();
+                
                 // Find a female voice if available
                 const voices = window.speechSynthesis.getVoices();
                 let femaleVoice = voices.find(voice => 
@@ -1364,7 +1394,7 @@
         }
 
         function handleHowAreYou() {
-            const response = "How are you? I'm doing great — thank you for asking! You can make my day even better by scanning the QR code and leaving a 5-star rating. Your feedback means a lot and helps us serve you better at Best Western!";
+            const response = "I'm doing great — thank you for asking! You can make my day even better by scanning the QR code and leaving a 5-star rating. Your feedback means a lot and helps us serve you better at Best Western!";
             
             speak(response);
             addMessage(response, 'assistant');
@@ -1374,7 +1404,7 @@
             qrDiv.innerHTML = `
                 <div style="text-align:center;margin:15px 0;">
                     <div class="qr-code">
-                        <img src="https://github.com/Bestwesten/Shree/blob/6e528d1743038cca02230d99cb87e4c61c3dc6f5/images/Google.png" alt="Review QR Code">
+                        <img src="https://github.com/Bestwesten/Shree/raw/c1b0fb810b2d5bcbe1ebe5b43e9d3e5276945094/images/Google.png" alt="Review QR Code">
                     </div>
                     <div style="font-size:0.9rem;margin-top:5px;">Scan to leave a review</div>
                 </div>
@@ -1396,7 +1426,7 @@
             qrDiv.innerHTML = `
                 <div style="text-align:center;margin:15px 0;">
                     <div class="qr-code">
-                        <img src="https://github.com/Bestwesten/Shree/blob/6e528d1743038cca02230d99cb87e4c61c3dc6f5/images/Google.png" alt="Review QR Code">
+                        <img src="https://github.com/Bestwesten/Shree/raw/c1b0fb810b2d5bcbe1ebe5b43e9d3e5276945094/images/Google.png" alt="Review QR Code">
                     </div>
                     <div style="font-size:0.9rem;margin-top:5px;">Scan to leave a review</div>
                 </div>
