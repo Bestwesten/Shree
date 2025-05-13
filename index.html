@@ -440,6 +440,19 @@
             margin-bottom: 20px;
         }
         
+        .cooldown-indicator {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.1);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--primary);
+            display: none;
+        }
+        
         @media (max-width: 480px) {
             .assistant-container {
                 height: 100vh;
@@ -455,6 +468,10 @@
             .qr-code {
                 width: 150px;
                 height: 150px;
+            }
+            
+            .cooldown-indicator {
+                bottom: 70px;
             }
         }
     </style>
@@ -507,6 +524,10 @@
         <div class="sleep-mode" id="sleepMode" style="display: none;">
             <div class="sleep-text">I'm taking a quick nap... Say "RITU wake up" to continue</div>
             <div class="status-dot" style="animation: pulse 2s infinite;"></div>
+        </div>
+
+        <div class="cooldown-indicator" id="cooldownIndicator">
+            Processing... please wait
         </div>
     </div>
 
@@ -891,6 +912,7 @@
         let awaitingReviewConfirmation = false;
         let isSleeping = false;
         let inactivityTimer = null;
+        let isInCooldown = false;
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         const managementPhoneNumber = '5134036508';
         const wakeUpResponses = [
@@ -914,12 +936,15 @@
         const currentDateTime = document.getElementById('currentDateTime');
         const currentWeather = document.getElementById('currentWeather');
         const sleepMode = document.getElementById('sleepMode');
+        const cooldownIndicator = document.getElementById('cooldownIndicator');
 
         // Initialize with microphone always on
         document.addEventListener('DOMContentLoaded', function() {
             // Setup button click handlers
             suggestionChips.forEach(chip => {
                 chip.addEventListener('click', function() {
+                    if (isInCooldown) return;
+                    
                     const key = this.getAttribute('data-key');
                     if (key === 'joke') {
                         tellJoke();
@@ -934,7 +959,9 @@
             });
 
             stopButton.addEventListener('click', toggleMute);
-            helpButton.addEventListener('click', () => playAudio('help'));
+            helpButton.addEventListener('click', () => {
+                if (!isInCooldown) playAudio('help');
+            });
             
             // Message modal handlers
             cancelMessage.addEventListener('click', () => {
@@ -1024,35 +1051,26 @@
                 }
                 
                 recognition = new SpeechRecognition();
-                recognition.continuous = true;
-                recognition.interimResults = isMobile;
+                recognition.continuous = false; // Process one utterance at a time
+                recognition.interimResults = false; // Don't show interim results
                 recognition.maxAlternatives = 1;
                 recognition.lang = 'en-US';
 
-                // Make microphone less sensitive
-                recognition.continuous = false; // Process one utterance at a time
-                recognition.interimResults = false; // Don't show interim results
-                
                 // Add noise suppression if available
                 if (recognition.noiseSuppression !== undefined) {
                     recognition.noiseSuppression = true;
                 }
 
                 recognition.onstart = function() {
-                    if (!isMuted && !isSleeping) {
+                    if (!isMuted && !isSleeping && !isInCooldown) {
                         micStatusText.innerHTML = '<div class="status-dot" style="background:var(--accent)"></div><span>Listening</span>';
                     }
                 };
 
                 recognition.onresult = function(event) {
-                    if (isMuted || isSleeping) return;
+                    if (isMuted || isSleeping || isInCooldown) return;
                     
                     const result = event.results[event.results.length - 1];
-                    
-                    if (isMobile && !result.isFinal) {
-                        return;
-                    }
-                    
                     const transcript = result[0].transcript.toLowerCase().trim();
                     addMessage(transcript, 'user');
                     
@@ -1112,13 +1130,13 @@
                     
                     // Automatically restart on error
                     setTimeout(() => {
-                        if (recognition && !isMuted && !isSleeping) recognition.start();
+                        if (recognition && !isMuted && !isSleeping && !isInCooldown) recognition.start();
                     }, 1000);
                 };
 
                 recognition.onend = function() {
-                    // Automatically restart when ended
-                    if (recognition && !isMuted && !isSleeping) {
+                    // Automatically restart when ended (after cooldown if applicable)
+                    if (recognition && !isMuted && !isSleeping && !isInCooldown) {
                         setTimeout(() => {
                             recognition.start();
                         }, 500); // Add small delay to prevent rapid restarts
@@ -1126,7 +1144,7 @@
                 };
 
                 // Start listening
-                if (!isMuted && !isSleeping) recognition.start();
+                if (!isMuted && !isSleeping && !isInCooldown) recognition.start();
 
             } catch(e) {
                 console.error('Speech recognition failed:', e);
@@ -1176,8 +1194,13 @@
             speak(randomResponse);
             addMessage(randomResponse, 'assistant');
             
+            // Start cooldown after wake up
+            startCooldown();
+            
             if (!isMuted && recognition) {
-                recognition.start();
+                setTimeout(() => {
+                    recognition.start();
+                }, 5000); // Wait 5 seconds after wake up before listening
             }
             
             micStatusText.innerHTML = '<div class="status-dot" style="background:var(--accent)"></div><span>Listening</span>';
@@ -1197,7 +1220,7 @@
             } else {
                 micStatusText.innerHTML = '<div class="status-dot" style="background:var(--accent)"></div><span>Listening</span>';
                 stopButton.textContent = 'Mute';
-                if (recognition && !isSleeping) recognition.start();
+                if (recognition && !isSleeping && !isInCooldown) recognition.start();
             }
             
             // Reset inactivity timer when unmuting
@@ -1243,8 +1266,37 @@
             speechSynthesis.cancel();
         }
 
+        function startCooldown() {
+            isInCooldown = true;
+            cooldownIndicator.style.display = 'block';
+            
+            // Update mic status
+            micStatusText.innerHTML = '<div class="status-dot" style="background:var(--secondary)"></div><span>Processing</span>';
+            
+            // Stop recognition during cooldown
+            if (recognition) {
+                recognition.stop();
+            }
+            
+            // Start cooldown timer
+            setTimeout(() => {
+                isInCooldown = false;
+                cooldownIndicator.style.display = 'none';
+                
+                // Update mic status
+                if (!isMuted && !isSleeping) {
+                    micStatusText.innerHTML = '<div class="status-dot" style="background:var(--accent)"></div><span>Listening</span>';
+                    
+                    // Restart recognition after cooldown
+                    if (recognition) {
+                        recognition.start();
+                    }
+                }
+            }, 5000); // 5 second cooldown
+        }
+
         function playAudio(key) {
-            if (isMuted || isSleeping) return;
+            if (isMuted || isSleeping || isInCooldown) return;
             
             // Stop any currently playing audio first
             stopAudio();
@@ -1270,6 +1322,8 @@
                 function playNext() {
                     if (index >= audioFile.length) {
                         messageArea.removeChild(typing);
+                        // Start cooldown after all audio files finish
+                        startCooldown();
                         return;
                     }
                     
@@ -1297,11 +1351,19 @@
                     .then(() => {
                         messageArea.removeChild(typing);
                         addMessage(getAudioDescription(key), 'assistant');
+                        
+                        // Start cooldown after audio finishes
+                        currentAudio.onended = () => {
+                            startCooldown();
+                        };
                     })
                     .catch(error => {
                         messageArea.removeChild(typing);
                         addMessage('Error playing audio', 'assistant');
                         console.error('Audio playback error:', error);
+                        
+                        // Start cooldown even if there was an error
+                        startCooldown();
                     });
             }
             
@@ -1361,7 +1423,15 @@
                     utterance.voice = femaleVoice;
                 }
                 
+                // Start cooldown after speech finishes
+                utterance.onend = function() {
+                    startCooldown();
+                };
+                
                 speechSynthesis.speak(utterance);
+            } else {
+                // If speech synthesis isn't available, start cooldown immediately
+                startCooldown();
             }
         }
 
@@ -1387,10 +1457,13 @@
             
             messageModal.style.display = 'none';
             messageText.value = '';
+            
+            // Start cooldown after sending message
+            startCooldown();
         }
 
         async function tellJoke() {
-            if (isMuted || isSleeping) return;
+            if (isMuted || isSleeping || isInCooldown) return;
             
             const typing = showTyping();
             
@@ -1424,7 +1497,7 @@
         }
 
         function showCurrentDate() {
-            if (isMuted || isSleeping) return;
+            if (isMuted || isSleeping || isInCooldown) return;
             
             const now = new Date();
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -1443,7 +1516,7 @@
         }
 
         async function getWeather() {
-            if (isMuted || isSleeping) return;
+            if (isMuted || isSleeping || isInCooldown) return;
             
             const typing = showTyping();
             
