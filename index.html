@@ -418,6 +418,28 @@
             object-fit: contain;
         }
         
+        .sleep-mode {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            z-index: 100;
+            font-size: 1.2rem;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .sleep-text {
+            margin-bottom: 20px;
+        }
+        
         @media (max-width: 480px) {
             .assistant-container {
                 height: 100vh;
@@ -481,6 +503,11 @@
             <button id="stopButton" class="btn btn-stop">Stop Audio</button>
             <button id="helpButton" class="btn">Quick Help</button>
         </div>
+
+        <div class="sleep-mode" id="sleepMode" style="display: none;">
+            <div class="sleep-text">I'm taking a quick nap... Say "RITU wake up" to continue</div>
+            <div class="status-dot" style="animation: pulse 2s infinite;"></div>
+        </div>
     </div>
 
     <!-- Message Modal -->
@@ -508,7 +535,7 @@
             'checkin': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/checkin.mp3',
             'housekeeping': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/housekeeping.mp3',
             'parking': 'https://github.com/Bestwesten/Shree/raw/a0bbecb34aed9fb8fc27f691cb49f937ecd9d19d/audio/parking.mp3',
-            'gym': 'https://github.com/Bestwesten/Shree/raw/main/audio/gym.mp3',
+            'gym': 'https://github.com/Bestwesten/Shree/blob/63191b4162c72aaa81e73eabd12ec83c97e9d01e/audio/gym.mp3',
             'emergency': 'https://github.com/Bestwesten/Shree/raw/f5948c7a3cf649ebca2c67de33687a6979b0c3e0/audio/emergency.mp3',
             'policies': 'https://github.com/Bestwesten/Shree/raw/f5948c7a3cf649ebca2c67de33687a6979b0c3e0/audio/policies.mp3',
             'manager': 'https://github.com/Bestwesten/Shree/raw/0c5746f6d33fd0a0270f4fcef5f5917188407375/audio/Manager_Contact.mp3',
@@ -844,7 +871,17 @@
             'all set': 'review_done',
             'completed review': 'review_done',
             'review submitted': 'review_done',
-            'qr scanned': 'review_done'
+            'qr scanned': 'review_done',
+            
+            // Wake up commands
+            'wake up': 'wake_up',
+            'ritu wake up': 'wake_up',
+            'are you there': 'wake_up',
+            'hello are you there': 'wake_up',
+            'hey wake up': 'wake_up',
+            'wakey wakey': 'wake_up',
+            'are you sleeping': 'wake_up',
+            'are you awake': 'wake_up'
         };
 
         // Global variables
@@ -852,8 +889,17 @@
         let recognition = null;
         let isMuted = false;
         let awaitingReviewConfirmation = false;
+        let isSleeping = false;
+        let inactivityTimer = null;
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         const managementPhoneNumber = '5134036508';
+        const wakeUpResponses = [
+            "Yes, yes, I'm up! Just dreaming of helping guests...",
+            "I'm awake! Was I snoring? Virtual assistants don't snore, right?",
+            "Zzz... oh! I mean, hello! I was just recharging my circuits!",
+            "I'm up! Just resting my voice circuits for a moment there!",
+            "Who turned on the lights? Oh, hello! Ready to help!"
+        ];
 
         // DOM elements
         const micStatusText = document.getElementById('micStatusText');
@@ -867,6 +913,7 @@
         const sendMessage = document.getElementById('sendMessage');
         const currentDateTime = document.getElementById('currentDateTime');
         const currentWeather = document.getElementById('currentWeather');
+        const sleepMode = document.getElementById('sleepMode');
 
         // Initialize with microphone always on
         document.addEventListener('DOMContentLoaded', function() {
@@ -906,6 +953,9 @@
             
             // Update weather info
             updateWeatherInfo();
+            
+            // Start inactivity timer
+            resetInactivityTimer();
             
             // Initial greeting
             setTimeout(() => {
@@ -979,14 +1029,23 @@
                 recognition.maxAlternatives = 1;
                 recognition.lang = 'en-US';
 
+                // Make microphone less sensitive
+                recognition.continuous = false; // Process one utterance at a time
+                recognition.interimResults = false; // Don't show interim results
+                
+                // Add noise suppression if available
+                if (recognition.noiseSuppression !== undefined) {
+                    recognition.noiseSuppression = true;
+                }
+
                 recognition.onstart = function() {
-                    if (!isMuted) {
+                    if (!isMuted && !isSleeping) {
                         micStatusText.innerHTML = '<div class="status-dot" style="background:var(--accent)"></div><span>Listening</span>';
                     }
                 };
 
                 recognition.onresult = function(event) {
-                    if (isMuted) return;
+                    if (isMuted || isSleeping) return;
                     
                     const result = event.results[event.results.length - 1];
                     
@@ -996,6 +1055,9 @@
                     
                     const transcript = result[0].transcript.toLowerCase().trim();
                     addMessage(transcript, 'user');
+                    
+                    // Reset inactivity timer on any interaction
+                    resetInactivityTimer();
                     
                     let matchedKey = null;
                     let highestConfidence = 0;
@@ -1027,10 +1089,14 @@
                         handleHowAreYou();
                     } else if (matchedKey === 'restaurant') {
                         playAudio('restaurant');
+                    } else if (matchedKey === 'wake_up') {
+                        wakeUpAssistant();
                     } else if (awaitingReviewConfirmation) {
                         handleReviewConfirmation(matchedKey);
                     } else if (matchedKey === 'review') {
                         handleReviewRequest();
+                    } else if (matchedKey === 'tired' || matchedKey === 'hungry' || matchedKey === 'sleepy') {
+                        handlePersonalWellBeing();
                     } else if (matchedKey) {
                         playAudio(matchedKey);
                     } else {
@@ -1040,23 +1106,27 @@
 
                 recognition.onerror = function(event) {
                     console.error('Speech recognition error:', event.error);
-                    if (!isMuted) {
+                    if (!isMuted && !isSleeping) {
                         micStatusText.innerHTML = '<div class="status-dot" style="background:var(--error)"></div><span>Error</span>';
                     }
                     
                     // Automatically restart on error
                     setTimeout(() => {
-                        if (recognition) recognition.start();
+                        if (recognition && !isMuted && !isSleeping) recognition.start();
                     }, 1000);
                 };
 
                 recognition.onend = function() {
                     // Automatically restart when ended
-                    if (recognition && !isMuted) recognition.start();
+                    if (recognition && !isMuted && !isSleeping) {
+                        setTimeout(() => {
+                            recognition.start();
+                        }, 500); // Add small delay to prevent rapid restarts
+                    }
                 };
 
                 // Start listening
-                if (!isMuted) recognition.start();
+                if (!isMuted && !isSleeping) recognition.start();
 
             } catch(e) {
                 console.error('Speech recognition failed:', e);
@@ -1066,6 +1136,54 @@
                 // Try again after 5 seconds
                 setTimeout(initVoiceRecognition, 5000);
             }
+        }
+
+        function resetInactivityTimer() {
+            // Clear existing timer
+            if (inactivityTimer) {
+                clearTimeout(inactivityTimer);
+            }
+            
+            // Set new timer (5 minutes = 300,000 milliseconds)
+            inactivityTimer = setTimeout(() => {
+                if (!isSleeping) {
+                    enterSleepMode();
+                }
+            }, 300000); // 5 minutes
+        }
+
+        function enterSleepMode() {
+            isSleeping = true;
+            sleepMode.style.display = 'flex';
+            stopAudio();
+            
+            if (recognition) {
+                recognition.stop();
+            }
+            
+            micStatusText.innerHTML = '<div class="status-dot" style="background:var(--secondary)"></div><span>Sleeping</span>';
+        }
+
+        function wakeUpAssistant() {
+            if (!isSleeping) return;
+            
+            isSleeping = false;
+            sleepMode.style.display = 'none';
+            
+            // Select a random wake-up response
+            const randomResponse = wakeUpResponses[Math.floor(Math.random() * wakeUpResponses.length)];
+            
+            speak(randomResponse);
+            addMessage(randomResponse, 'assistant');
+            
+            if (!isMuted && recognition) {
+                recognition.start();
+            }
+            
+            micStatusText.innerHTML = '<div class="status-dot" style="background:var(--accent)"></div><span>Listening</span>';
+            
+            // Reset inactivity timer
+            resetInactivityTimer();
         }
 
         function toggleMute() {
@@ -1079,7 +1197,12 @@
             } else {
                 micStatusText.innerHTML = '<div class="status-dot" style="background:var(--accent)"></div><span>Listening</span>';
                 stopButton.textContent = 'Mute';
-                if (recognition) recognition.start();
+                if (recognition && !isSleeping) recognition.start();
+            }
+            
+            // Reset inactivity timer when unmuting
+            if (!isMuted) {
+                resetInactivityTimer();
             }
         }
 
@@ -1121,8 +1244,9 @@
         }
 
         function playAudio(key) {
-            if (isMuted) return;
+            if (isMuted || isSleeping) return;
             
+            // Stop any currently playing audio first
             stopAudio();
             
             const audioFile = audioMap[key];
@@ -1180,6 +1304,9 @@
                         console.error('Audio playback error:', error);
                     });
             }
+            
+            // Reset inactivity timer when playing audio
+            resetInactivityTimer();
         }
 
         function getAudioDescription(key) {
@@ -1263,7 +1390,7 @@
         }
 
         async function tellJoke() {
-            if (isMuted) return;
+            if (isMuted || isSleeping) return;
             
             const typing = showTyping();
             
@@ -1291,10 +1418,13 @@
                 addMessage('I tried to tell a joke but something went wrong. Maybe ask me again later!', 'assistant');
                 speak("I tried to tell a joke but something went wrong. Maybe ask me again later!");
             }
+            
+            // Reset inactivity timer
+            resetInactivityTimer();
         }
 
         function showCurrentDate() {
-            if (isMuted) return;
+            if (isMuted || isSleeping) return;
             
             const now = new Date();
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -1307,10 +1437,13 @@
             messageArea.scrollTop = messageArea.scrollHeight;
             
             speak(`Today is ${dateString}`);
+            
+            // Reset inactivity timer
+            resetInactivityTimer();
         }
 
         async function getWeather() {
-            if (isMuted) return;
+            if (isMuted || isSleeping) return;
             
             const typing = showTyping();
             
@@ -1391,6 +1524,9 @@
                 addMessage('Sorry, I couldn\'t retrieve the weather information right now. Please try again later.', 'assistant');
                 speak("Sorry, I couldn't retrieve the weather information right now. Please try again later.");
             }
+            
+            // Reset inactivity timer
+            resetInactivityTimer();
         }
 
         function handleHowAreYou() {
@@ -1416,6 +1552,37 @@
             messageArea.scrollTop = messageArea.scrollHeight;
             
             awaitingReviewConfirmation = true;
+            
+            // Reset inactivity timer
+            resetInactivityTimer();
+        }
+
+        function handlePersonalWellBeing() {
+            const response = "Yes! But scanning my QR code will make me feel special! Your feedback helps me improve and serve you better at Best Western.";
+            
+            speak(response);
+            addMessage(response, 'assistant');
+            
+            // Show QR code
+            const qrDiv = document.createElement('div');
+            qrDiv.innerHTML = `
+                <div style="text-align:center;margin:15px 0;">
+                    <div class="qr-code">
+                        <img src="https://github.com/Bestwesten/Shree/raw/c1b0fb810b2d5bcbe1ebe5b43e9d3e5276945094/images/Google.png" alt="Review QR Code">
+                    </div>
+                    <div style="font-size:0.9rem;margin-top:5px;">Scan to leave a review</div>
+                </div>
+                <div style="text-align:center;margin-bottom:15px;">
+                    <div>Have you finished scanning the QR code?</div>
+                </div>
+            `;
+            messageArea.appendChild(qrDiv);
+            messageArea.scrollTop = messageArea.scrollHeight;
+            
+            awaitingReviewConfirmation = true;
+            
+            // Reset inactivity timer
+            resetInactivityTimer();
         }
 
         function handleReviewRequest() {
@@ -1438,6 +1605,9 @@
             messageArea.scrollTop = messageArea.scrollHeight;
             
             awaitingReviewConfirmation = true;
+            
+            // Reset inactivity timer
+            resetInactivityTimer();
         }
 
         function handleReviewConfirmation(response) {
@@ -1453,12 +1623,18 @@
                 addMessage("I didn't understand. Please let me know if you've finished scanning the QR code by saying 'yes' or 'no'.", 'assistant');
                 speak("I didn't understand. Please let me know if you've finished scanning the QR code by saying 'yes' or 'no'.");
             }
+            
+            // Reset inactivity timer
+            resetInactivityTimer();
         }
 
         function handleUnknownCommand() {
             const response = "I can only answer about hotel and what my creator has taught me so far. Sorry! Ask me something related to hotel. Thank you!";
             speak(response);
             addMessage(response, 'assistant');
+            
+            // Reset inactivity timer
+            resetInactivityTimer();
         }
     </script>
 </body>
